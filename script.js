@@ -4,12 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const wordCountDisplay = document.getElementById('word-count');
     const rulesList = document.getElementById('rules-list');
     const downloadButton = document.getElementById('download-button');
-    const boldButton = document.getElementById('bold-button');
+    // Bold button removed
+    // const boldButton = document.getElementById('bold-button');
     const winMessage = document.getElementById('win-message');
 
     // --- Rule Definitions ---
     // Each rule object has:
-    // - id: Unique identifier
+    // - id: Unique identifier (sequential for activation logic)
     // - description: Text shown to the user
     // - validator: Function returning true if rule is satisfied
     // - satisfied: Boolean status
@@ -17,87 +18,83 @@ document.addEventListener('DOMContentLoaded', () => {
     const rules = [
         {
             id: 1,
-            description: 'The Launch Pad: Your scenario must be at least 100 words.',
-            validator: (text) => getWordCount(text) >= 100,
+            description: 'Getting Started: Write at least 10 words to reveal the next rules.',
+            validator: (text) => getWordCount(text) >= 10, // Changed from 100 to 10
             satisfied: false,
             active: true // First rule is active initially
         },
-        {
+        { // New Rule: Minimum length of 50 words
             id: 2,
-            description: 'Educational Focus: Include at least one of these terms: "learning", "education", "curriculum", "pedagogy", or "instruction".',
+            description: 'Minimum Length: Your story must be at least 50 words long.',
+            validator: (text) => getWordCount(text) >= 50,
+            satisfied: false,
+            active: false
+        },
+        { // Original Rule 2 is now Rule 3
+            id: 3,
+            description: 'Educational Focus: Include "learning", "education", "curriculum", "pedagogy", or "instruction".',
             validator: (text) => /\b(learning|education|curriculum|pedagogy|instruction)\b/i.test(text),
             satisfied: false,
             active: false
         },
-        {
-            id: 3,
-            description: 'AI Presence: Include one of these futuristic educational guides: "AI tutor", "holographic teacher", "neuroteacher", "quantum mentor", or "robotic professor".',
+        { // Original Rule 3 is now Rule 4
+            id: 4,
+            description: 'AI Presence: Include "AI tutor", "holographic teacher", "neuroteacher", "quantum mentor", or "robotic professor".',
             validator: (text) => /\b(AI tutor|holographic teacher|neuroteacher|quantum mentor|robotic professor)\b/i.test(text),
             satisfied: false,
             active: false
         },
-        {
-            id: 4,
-            description: 'Future Tech: Mention at least one innovative learning technology: "neural implant", "VR headset", "quantum projector", "holodeck", "mind-link", "nano-tutor", or "memory enhancement".',
+        { // Original Rule 4 is now Rule 5
+            id: 5,
+            description: 'Future Tech: Mention "neural implant", "VR headset", "quantum projector", "holodeck", "mind-link", "nano-tutor", or "memory enhancement".',
             validator: (text) => /\b(neural implant|VR headset|quantum projector|holodeck|mind-link|nano-tutor|memory enhancement)\b/i.test(text),
             satisfied: false,
             active: false
         },
-        {
-            id: 5,
-            description: 'Student Reaction: Include at least one emotional response: "excitement", "confusion", "curiosity", "wonder", "enlightenment", "frustration", or "inspiration".',
+        { // Original Rule 5 is now Rule 6
+            id: 6,
+            description: 'Student Reaction: Include "excitement", "confusion", "curiosity", "wonder", "enlightenment", "frustration", or "inspiration".',
             validator: (text) => /\b(excitement|confusion|curiosity|wonder|enlightenment|frustration|inspiration)\b/i.test(text),
             satisfied: false,
             active: false
         },
-        {
-            id: 6,
-            description: 'Reimagined Spaces: Describe one futuristic learning environment: "floating classroom", "virtual academy", "orbital school", "underwater campus", "neural network hub", "cloud university", or "biosphere lab".',
+        { // Original Rule 6 is now Rule 7
+            id: 7,
+            description: 'Reimagined Spaces: Describe "floating classroom", "virtual academy", "orbital school", "underwater campus", "neural network hub", "cloud university", or "biosphere lab".',
             validator: (text) => /\b(floating classroom|virtual academy|orbital school|underwater campus|neural network hub|cloud university|biosphere lab)\b/i.test(text),
             satisfied: false,
             active: false
         },
-        {
-            id: 7,
+        { // Original Rule 7 is now Rule 8
+            id: 8,
             description: 'Future Timeline: Include a specific year beyond 2030 (e.g., "2035", "2157").',
-            // RegEx: Matches 4-digit numbers starting 2030-2099, 2100-2999, 3000-9999
             validator: (text) => /\b(20[3-9]\d|2[1-9]\d\d|[3-9]\d{3})\b/.test(text),
             satisfied: false,
             active: false
         },
-        {
-            id: 8,
-            description: 'Learning Hurdles: Mention one challenge: "data overload", "AI bias", "privacy concerns", "attention scarcity", "digital divide", "information authentication", or "sensory integration".',
+        { // Original Rule 8 is now Rule 9
+            id: 9,
+            description: 'Learning Hurdles: Mention "data overload", "AI bias", "privacy concerns", "attention scarcity", "digital divide", "information authentication", or "sensory integration".',
             validator: (text) => /\b(data overload|AI bias|privacy concerns|attention scarcity|digital divide|information authentication|sensory integration)\b/i.test(text),
             satisfied: false,
             active: false
         },
-        {
-            id: 9,
-            description: 'Multisensory Experience: Include a vivid sensory detail: "hum of quantum processors", "glow of holographic displays", "scent of digital forests", "texture of haptic interfaces", "taste of knowledge supplements", or "resonance of thought-sharing".',
+        { // Original Rule 9 is now Rule 10
+            id: 10,
+            description: 'Multisensory Experience: Include a vivid sensory detail like "hum of...", "glow of...", "scent of...", "texture of...", "taste of...", or "resonance of...".',
             // Simplified check for keywords within potential phrases
-            validator: (text) => /\b(hum of|glow of|scent of|texture of|taste of|resonance of)\b.*\b(processors|displays|forests|interfaces|supplements|thought-sharing)\b/i.test(text),
+            validator: (text) => /\b(hum of|glow of|scent of|texture of|taste of|resonance of)\b/i.test(text), // Simplified check
             satisfied: false,
             active: false
         },
-        {
-            id: 10,
-            description: 'Paradigm Shift: Reference a fundamental change: "learning is gamified", "exams are obsolete", "knowledge is crowdsourced", "skills over memorization", "continuous neural updating", or "telepathic collaboration".',
+        { // Original Rule 10 is now Rule 11
+            id: 11,
+            description: 'Paradigm Shift: Reference "learning is gamified", "exams are obsolete", "knowledge is crowdsourced", "skills over memorization", "continuous neural updating", or "telepathic collaboration".',
             validator: (text) => /\b(learning is gamified|exams are obsolete|knowledge is crowdsourced|skills over memorization|continuous neural updating|telepathic collaboration)\b/i.test(text),
             satisfied: false,
             active: false
         },
-        {
-            id: 11,
-            description: 'Numerical Balance: Your final word count must be a multiple of 10 (and at least 100).',
-            validator: (text) => {
-                const count = getWordCount(text);
-                return count >= 100 && count % 10 === 0;
-            },
-            satisfied: false,
-            active: false
-        },
-        {
+         { // Original Rule 12 is now Rule 12
             id: 12,
             description: 'Narrative Structure Markers: Include "in this future", "however", and "ultimately".',
             validator: (text) => {
@@ -105,6 +102,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 return lowerText.includes("in this future") &&
                        lowerText.includes("however") &&
                        lowerText.includes("ultimately");
+            },
+            satisfied: false,
+            active: false
+        },
+        { // Original Rule 11 is now Rule 13
+            id: 13,
+            description: 'Numerical Balance: Your final word count must be a multiple of 10 (and at least 50).',
+            validator: (text) => {
+                const count = getWordCount(text);
+                // Changed minimum from 100 to 50
+                return count >= 50 && count % 10 === 0;
             },
             satisfied: false,
             active: false
@@ -119,44 +127,48 @@ document.addEventListener('DOMContentLoaded', () => {
      * @returns {number} The number of words.
      */
     function getWordCount(text) {
-        // Trim whitespace, split by spaces/newlines, filter empty strings
+        if (!text) return 0;
+        // Trim whitespace, split by one or more whitespace characters, filter empty strings
         return text.trim().split(/\s+/).filter(word => word.length > 0).length;
     }
 
     /**
      * Renders the current state of the rules list in the UI.
+     * Attempts to minimize flickering by only adding new elements.
      */
     function renderRules() {
-        rulesList.innerHTML = ''; // Clear existing rules
-        let firstUnsatisfiedFound = false; // To apply animation only to the next rule to appear
+        // Instead of clearing all, selectively add/update.
+        // This requires keeping track of rendered rules.
+        // For simplicity and given the small number of rules,
+        // we'll stick to the rebuild approach but ensure the animation
+        // CSS targets appropriately. The CSS handles the fade-in.
+        rulesList.innerHTML = ''; // Clear existing rules for simplicity
+        let ruleAdded = false; // Flag to check if any rule was added in this render cycle
 
-        rules.forEach((rule, index) => {
+        rules.forEach((rule) => {
             if (rule.active) {
                 const li = document.createElement('li');
-                li.classList.add('rule');
-                li.classList.add(rule.satisfied ? 'satisfied' : 'unsatisfied');
+                li.className = `rule ${rule.satisfied ? 'satisfied' : 'unsatisfied'}`;
                 li.textContent = rule.description;
-
-                // Add fade-in animation only to the rule that just became active
-                if (!rule.satisfied && !firstUnsatisfiedFound) {
-                     // Check if this is the rule *after* the last satisfied one
-                     const previousRuleSatisfied = index === 0 || rules[index - 1].satisfied;
-                     if (previousRuleSatisfied && !li.classList.contains('rendered')) {
-                         li.style.animationDelay = `${0.1 * index}s`; // Stagger animation slightly
-                         li.classList.add('rendered'); // Mark as rendered to prevent re-animating
-                     }
-                     firstUnsatisfiedFound = true; // Only animate the first unsatisfied rule shown
-                } else if (rule.satisfied && !li.classList.contains('rendered')) {
-                    // Ensure already satisfied rules that were previously hidden also animate in
-                     li.style.animationDelay = `${0.1 * index}s`;
-                     li.classList.add('rendered');
-                }
-
-
+                // Add a data attribute to potentially identify rules later if needed
+                li.dataset.ruleId = rule.id;
                 rulesList.appendChild(li);
+                ruleAdded = true;
             }
         });
+
+        // If no rules were added (e.g., initial state before 10 words),
+        // ensure the list isn't visually empty if it wasn't meant to be.
+        // This check might not be strictly necessary with the current logic.
+        // if (!ruleAdded && rules[0].active) {
+        //     const li = document.createElement('li');
+        //     li.className = `rule unsatisfied`;
+        //     li.textContent = rules[0].description;
+        //     li.dataset.ruleId = rules[0].id;
+        //     rulesList.appendChild(li);
+        // }
     }
+
 
     /**
      * Validates all active rules against the current story text,
@@ -164,44 +176,41 @@ document.addEventListener('DOMContentLoaded', () => {
      * and checks for the win condition.
      */
     function validateAndUpdate() {
-        const currentText = storyInput.textContent || ""; // Use textContent for validation
-        const currentHtml = storyInput.innerHTML; // Potentially needed for future formatting rules
-        let allSatisfied = true;
-        let activateNextRule = false;
+        const currentText = storyInput.textContent || "";
+        let needsRender = false; // Flag to check if UI update is needed
+        let lastSatisfiedRuleId = 0; // Track the highest ID of a satisfied rule
 
-        rules.forEach((rule, index) => {
+        rules.forEach((rule) => {
             if (rule.active) {
-                const wasSatisfied = rule.satisfied;
-                // Pass textContent for most rules, potentially innerHTML if needed later
+                const previousStatus = rule.satisfied;
+                // Validate rule
                 rule.satisfied = rule.validator(currentText);
 
-                // If a rule just became satisfied, flag to activate the next one
-                if (!wasSatisfied && rule.satisfied && index < rules.length - 1) {
-                    activateNextRule = true;
+                // If status changed, we need to re-render
+                if (rule.satisfied !== previousStatus) {
+                    needsRender = true;
                 }
 
-                // If any active rule is not satisfied, the game is not won
-                if (!rule.satisfied) {
-                    allSatisfied = false;
+                if(rule.satisfied) {
+                    lastSatisfiedRuleId = Math.max(lastSatisfiedRuleId, rule.id);
                 }
-            } else {
-                // If a rule is not active, it means prerequisites aren't met
-                allSatisfied = false;
             }
         });
 
-        // Activate the next rule if the flag is set
-        if (activateNextRule) {
-            const nextRuleIndex = rules.findIndex(r => !r.active);
-            if (nextRuleIndex !== -1) {
-                rules[nextRuleIndex].active = true;
-            }
+        // Activate the next rule if the last active rule is now satisfied
+        const nextRuleIndex = rules.findIndex(r => r.id === lastSatisfiedRuleId + 1);
+        if (nextRuleIndex !== -1 && !rules[nextRuleIndex].active) {
+             rules[nextRuleIndex].active = true;
+             needsRender = true; // Need to render the newly activated rule
         }
 
-        // Update UI
-        updateWordCount(currentText);
-        renderRules();
-        checkWinCondition(allSatisfied);
+
+        // Update UI only if something changed or a new rule was activated
+        updateWordCount(currentText); // Update word count regardless
+        if (needsRender) {
+            renderRules();
+        }
+        checkWinCondition(); // Check win condition after potential updates
     }
 
     /**
@@ -216,10 +225,9 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Checks if all rules are satisfied and updates the UI accordingly
      * (border color, win message, download button).
-     * @param {boolean} allSatisfied - Whether all rules are currently met.
      */
-    function checkWinCondition(allSatisfied) {
-         // Check if *all* rules (not just active) are satisfied
+    function checkWinCondition() {
+         // Check if *all* rules are satisfied
         const trulyAllSatisfied = rules.every(rule => rule.satisfied);
 
         if (trulyAllSatisfied) {
@@ -227,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
             winMessage.style.display = 'block'; // Show win message
             downloadButton.disabled = false; // Enable download
         } else {
-            // Determine border color: red if any active rule is unsatisfied, else default blue
+            // Determine border color: red if any *active* rule is unsatisfied, else default blue
             const anyActiveUnsatisfied = rules.some(rule => rule.active && !rule.satisfied);
             storyInput.style.borderColor = anyActiveUnsatisfied ? '#ff3333' : '#00ccff'; // Red or default blue
             winMessage.style.display = 'none'; // Hide win message
@@ -239,8 +247,11 @@ document.addEventListener('DOMContentLoaded', () => {
      * Handles the download story button click.
      */
     function downloadStory() {
-        const storyText = storyInput.textContent; // Get plain text
-        const blob = new Blob([storyText], { type: 'text/plain;charset=utf-8' });
+        const storyText = storyInput.textContent || ""; // Get plain text
+        // Basic cleanup: Replace multiple spaces/newlines with single ones for readability
+        const cleanedText = storyText.replace(/\s+/g, ' ').trim();
+
+        const blob = new Blob([cleanedText], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(blob);
 
         const link = document.createElement('a');
@@ -253,34 +264,26 @@ document.addEventListener('DOMContentLoaded', () => {
         URL.revokeObjectURL(url); // Free up memory
     }
 
-    /**
-     * Applies bold formatting to the selected text.
-     * Note: document.execCommand is deprecated but works for this simple case.
-     */
-    function applyBold() {
-        document.execCommand('bold', false, null);
-        storyInput.focus(); // Keep focus in the editor
-        // Re-validate in case bolding affects any (future) rules
-        validateAndUpdate();
-    }
+    // ApplyBold function and related listeners removed
 
     // --- Event Listeners ---
     storyInput.addEventListener('input', validateAndUpdate);
     downloadButton.addEventListener('click', downloadStory);
-    boldButton.addEventListener('click', applyBold);
+    // Bold button listener removed
+    // boldButton.addEventListener('click', applyBold);
 
-     // Add Ctrl+B shortcut for bolding
-    storyInput.addEventListener('keydown', (event) => {
-        if (event.ctrlKey && event.key === 'b') {
-            event.preventDefault(); // Prevent default browser bold
-            applyBold();
-        }
-    });
+    // Ctrl+B listener removed
+    // storyInput.addEventListener('keydown', (event) => {
+    //     if (event.ctrlKey && event.key === 'b') {
+    //         event.preventDefault();
+    //         applyBold();
+    //     }
+    // });
 
 
     // --- Initial Setup ---
-    renderRules(); // Initial render of the first rule
+    renderRules(); // Initial render of the first rule(s)
     updateWordCount(''); // Initial word count
-    checkWinCondition(false); // Set initial border/button state
+    checkWinCondition(); // Set initial border/button state
 
 });
