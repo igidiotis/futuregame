@@ -1,96 +1,96 @@
-/* Import Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+/* Import Google Font: Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
-/* Basic Reset and Body Styling */
+/* Basic Reset and Body Styling - Light Theme */
 body {
-    background-color: #1a1a1a; /* Dark background */
-    color: #e0e0e0; /* Light text */
-    font-family: 'Arial', sans-serif; /* Fallback font */
+    background-color: #f4f7f9; /* Light gray background */
+    color: #333; /* Dark text */
+    font-family: 'Inter', sans-serif; /* Modern font */
     line-height: 1.6;
     margin: 0;
     padding: 20px;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align to top */
+    align-items: flex-start;
     min-height: 100vh;
 }
 
 /* Container for centering content */
 .container {
-    background-color: #252525; /* Slightly lighter dark shade for container */
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 204, 255, 0.3); /* Neon blue glow */
+    background-color: #ffffff; /* White container background */
+    padding: 30px 40px; /* Increased padding */
+    border-radius: 8px; /* Slightly less rounded */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Softer shadow */
     max-width: 800px;
     width: 100%;
-    box-sizing: border-box; /* Include padding in width */
+    box-sizing: border-box;
 }
 
 /* Header Styling */
 header h1 {
-    font-family: 'Orbitron', sans-serif; /* Futuristic font */
-    color: #00ccff; /* Neon blue */
+    font-family: 'Inter', sans-serif; /* Use main font */
+    font-weight: 700; /* Bold */
+    color: #0056b3; /* Modern dark blue */
     text-align: center;
-    margin-bottom: 20px;
-    font-size: 2em; /* Larger title */
+    margin-bottom: 25px;
+    font-size: 1.8em; /* Adjusted size */
 }
 
 /* Introduction Text */
 .intro {
     text-align: center;
-    margin-bottom: 20px;
-    color: #cccccc; /* Slightly dimmer text */
-}
-
-/* Controls (Bold Button) */
-.controls {
-    margin-bottom: 10px;
-    text-align: left;
+    margin-bottom: 25px;
+    color: #555; /* Medium-dark gray */
+    font-size: 1.05em;
 }
 
 /* Contenteditable Input Area */
 #story-input {
-    background-color: #2a2a2a; /* Darker input background */
-    color: #e0e0e0;
-    border: 2px solid #00ccff; /* Neon blue border */
+    background-color: #ffffff; /* White background */
+    color: #333; /* Dark text */
+    border: 1px solid #ccc; /* Standard border */
     padding: 15px;
     min-height: 200px;
     border-radius: 5px;
     margin-bottom: 15px;
-    overflow-y: auto; /* Scrollable */
+    overflow-y: auto;
     font-size: 16px;
-    outline: none; /* Remove default focus outline */
-    transition: border-color 0.3s ease; /* Smooth transition for border color */
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+    line-height: 1.7; /* Improve readability */
 }
 
 #story-input:focus {
-    border-color: #00ffcc; /* Brighter neon on focus */
-    box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+    border-color: #007bff; /* Standard blue focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); /* Subtle focus glow */
 }
 
-/* Styling for bold text within the editor */
+/* Styling for bold text within the editor (if re-added) */
 #story-input b, #story-input strong {
-    color: #00ffcc; /* Highlight bold text */
+    color: #0056b3; /* Match header color */
     font-weight: bold;
 }
 
 /* Word Count Display */
 .info-display {
-    font-family: 'Orbitron', sans-serif;
-    color: #00ccff;
+    font-family: 'Inter', sans-serif;
+    color: #007bff; /* Use primary blue */
     text-align: right;
     margin-bottom: 20px;
     font-size: 0.9em;
+    font-weight: 700;
 }
 
 /* Rules Section Title */
 h2 {
-    font-family: 'Orbitron', sans-serif;
-    color: #00ccff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: #333; /* Dark heading */
     margin-top: 30px;
     margin-bottom: 15px;
-    border-bottom: 1px solid #00ccff;
-    padding-bottom: 5px;
+    border-bottom: 1px solid #eee; /* Lighter separator */
+    padding-bottom: 8px;
+    font-size: 1.4em;
 }
 
 /* Rules List Styling */
@@ -102,98 +102,90 @@ h2 {
 
 /* Individual Rule Item Styling */
 .rule {
-    background-color: #333; /* Dark background for rule item */
+    background-color: #f9f9f9; /* Very light gray background for rule */
     margin-bottom: 10px;
     padding: 12px 15px;
-    border-radius: 5px;
-    border-left: 5px solid #ff3333; /* Default red border (unsatisfied) */
+    border-radius: 4px;
+    border-left: 4px solid #dc3545; /* Default red border (unsatisfied) */
     display: flex;
     align-items: center;
-    opacity: 0; /* Start hidden for animation */
-    transform: translateY(10px); /* Start slightly lower for animation */
-    animation: fadeInRule 0.5s ease forwards;
+    transition: background-color 0.3s ease, border-left-color 0.3s ease; /* Smooth transitions */
+    /* Removed animation properties to rely on JS for adding/updating */
 }
 
 /* Rule Status Symbols (using ::before) */
 .rule::before {
-    font-family: 'Arial', sans-serif; /* Ensure symbol renders consistently */
+    font-family: 'Arial', sans-serif;
     font-weight: bold;
-    margin-right: 10px;
-    font-size: 1.2em;
+    margin-right: 12px; /* Increased spacing */
+    font-size: 1.1em;
 }
 
 /* Unsatisfied Rule Styling */
 .rule.unsatisfied {
-    border-left-color: #ff3333; /* Red border */
-    color: #ffaaaa; /* Lighter red text */
+    border-left-color: #dc3545; /* Bootstrap red */
+    color: #555; /* Keep text readable */
 }
 .rule.unsatisfied::before {
-    content: '✗'; /* Cross symbol */
-    color: #ff3333;
+    content: '✗';
+    color: #dc3545;
 }
 
 /* Satisfied Rule Styling */
 .rule.satisfied {
-    border-left-color: #00ff00; /* Green border */
-    color: #aaffaa; /* Lighter green text */
-    text-decoration: none; /* Remove potential line-through */
+    border-left-color: #28a745; /* Bootstrap green */
+    color: #333; /* Keep text dark */
+    background-color: #f0fff4; /* Very subtle green background */
 }
 .rule.satisfied::before {
-    content: '✓'; /* Checkmark symbol */
-    color: #00ff00;
-}
-
-/* Fade-in Animation for Rules */
-@keyframes fadeInRule {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    content: '✓';
+    color: #28a745;
 }
 
 /* Button Styling (General) */
 button {
-    font-family: 'Orbitron', sans-serif;
-    background-color: #00ccff; /* Neon blue background */
-    color: #1a1a1a; /* Dark text */
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    background-color: #007bff; /* Primary blue */
+    color: #ffffff; /* White text */
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
-    box-shadow: 0 0 5px rgba(0, 204, 255, 0.5);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 button:hover:not(:disabled) {
-    background-color: #00e6ff; /* Brighter blue on hover */
-    box-shadow: 0 0 15px rgba(0, 204, 255, 0.8);
+    background-color: #0056b3; /* Darker blue on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 button:active:not(:disabled) {
-    background-color: #00aadd; /* Slightly darker blue when clicked */
+    background-color: #004085; /* Even darker blue when clicked */
 }
 
 /* Disabled Button Styling */
 button:disabled {
-    background-color: #666; /* Gray background */
-    color: #aaa; /* Lighter gray text */
+    background-color: #adb5bd; /* Gray background */
+    color: #f8f9fa; /* Lighter text */
     cursor: not-allowed;
     box-shadow: none;
 }
 
 /* Download Button Specific Margin */
 #download-button {
-    display: block; /* Make it block to center easily */
-    margin: 30px auto 0 auto; /* Center the download button */
-    width: fit-content; /* Adjust width to content */
+    display: block;
+    margin: 30px auto 0 auto;
+    width: fit-content;
 }
 
 /* Congratulatory Message */
 .win-message {
-    background-color: rgba(0, 255, 0, 0.1); /* Light green background */
-    border: 1px solid #00ff00;
-    color: #aaffaa;
+    background-color: #e9f7ec; /* Light green background */
+    border: 1px solid #28a745; /* Green border */
+    color: #155724; /* Dark green text */
     padding: 15px;
     margin-top: 20px;
     text-align: center;
@@ -217,8 +209,8 @@ button:disabled {
         font-size: 15px;
     }
     button {
-        padding: 8px 15px;
-        font-size: 0.9em;
+        padding: 9px 16px;
+        font-size: 0.95em;
     }
     .rule {
         padding: 10px 12px;
