@@ -11,43 +11,43 @@ document.addEventListener('DOMContentLoaded', () => {
      const rules = [
         {
             id: 1,
-            description: 'Getting Started: Write at least 10 words to reveal the next rules.',
+            description: 'Getting Started: Write at least 10 words to reveal the next rules. Tip: try describing your story's context or setting.',
             validator: (text) => getWordCount(text) >= 10,
             satisfied: false,
             active: true
         },
-        {
+         {
             id: 2,
-            description: 'Minimum Length: Your story must be at least 50 words long.',
-            validator: (text) => getWordCount(text) >= 50,
-            satisfied: false,
-            active: false
-        },
-        {
-            id: 3,
             description: 'Educational Focus: Include "learning", "education", "curriculum", "pedagogy", or "instruction".',
             validator: (text) => /\b(learning|education|curriculum|pedagogy|instruction)\b/i.test(text),
             satisfied: false,
             active: false
         },
-        {
-            id: 4,
+         {
+            id: 3,
             description: 'AI Presence: Include "AI tutor", "holographic teacher", "neuroteacher", "quantum mentor", or "robotic professor".',
             validator: (text) => /\b(AI tutor|holographic teacher|neuroteacher|quantum mentor|robotic professor)\b/i.test(text),
             satisfied: false,
             active: false
         },
-        {
-            id: 5,
+         {
+            id: 4,
             description: 'Future Tech: Mention "neural implant", "VR headset", "quantum projector", "holodeck", "mind-link", "nano-tutor", or "memory enhancement".',
             validator: (text) => /\b(neural implant|VR headset|quantum projector|holodeck|mind-link|nano-tutor|memory enhancement)\b/i.test(text),
             satisfied: false,
             active: false
         },
         {
+            id: 5,
+            description: 'Minimum Length: Your story must be at least 50 words long.',
+            validator: (text) => getWordCount(text) >= 50,
+            satisfied: false,
+            active: false
+        },
+        {
             id: 6,
             description: 'Student Reaction: Include "excitement", "confusion", "curiosity", "wonder", "enlightenment", "frustration", or "inspiration".',
-            validator: (text) => /\b(excitement|confusion|curiosity|wonder|enlightenment|frustration|inspiration)\b/i.test(text),
+            validator: (text) => /\b(excitement|excited|confused|confusion|curious|curiosity|wonder|enlightenment|frustration|frustrated|inspiration|inspired)\b/i.test(text),
             satisfied: false,
             active: false
         },
@@ -81,8 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             id: 11,
-            description: 'Paradigm Shift: Reference "learning is gamified", "exams are obsolete", "knowledge is crowdsourced", "skills over memorization", "continuous neural updating", or "telepathic collaboration".',
-            validator: (text) => /\b(learning is gamified|exams are obsolete|knowledge is crowdsourced|skills over memorization|continuous neural updating|telepathic collaboration)\b/i.test(text),
+            description: 'Paradigm Shift: Reference "learning is gamified", "exams are obsolete", "knowledge is crowdsourced", "skills over memorisation", "continuous neural updating", or "telepathic collaboration".',
+            validator: (text) => /\b(learning is gamified|exams are obsolete|knowledge is crowdsourced|skills over memorisation|continuous neural updating|telepathic collaboration)\b/i.test(text),
             satisfied: false,
             active: false
         },
