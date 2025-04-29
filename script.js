@@ -7,23 +7,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const winMessage = document.getElementById('win-message');
 
     // --- Rule Definitions ---
-    // (Rules array remains the same as the previous version)
-     const rules = [
+    const rules = [
         {
             id: 1,
-            description: 'Getting Started: Write at least 10 words to reveal the next rules. Tip: try describing your story's context or setting.',
+            description: 'Getting Started: Write at least 10 words to reveal the next rules. Tip: try describing your story\'s context or setting.',
             validator: (text) => getWordCount(text) >= 10,
             satisfied: false,
             active: true
         },
-         {
+        {
             id: 2,
             description: 'Educational Focus: Include "learning", "education", "curriculum", "pedagogy", or "instruction".',
             validator: (text) => /\b(learning|education|curriculum|pedagogy|instruction)\b/i.test(text),
             satisfied: false,
             active: false
         },
-         {
+          {
             id: 3,
             description: 'AI Presence: Include "AI tutor", "holographic teacher", "neuroteacher", "quantum mentor", or "robotic professor".',
             validator: (text) => /\b(AI tutor|holographic teacher|neuroteacher|quantum mentor|robotic professor)\b/i.test(text),
@@ -111,44 +110,31 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     // --- Helper Functions ---
-
-    /**
-     * Calculates the word count of a given text string.
-     * @param {string} text - The text to count words in.
-     * @returns {number} The number of words.
-     */
     function getWordCount(text) {
         if (!text) return 0;
         return text.trim().split(/\s+/).filter(word => word.length > 0).length;
     }
 
-    /**
-     * Renders the rules list efficiently to prevent flickering.
-     * Only adds new rules or updates existing ones.
-     */
+    function updateWordCount(text) {
+        const count = getWordCount(text);
+        wordCountDisplay.textContent = `Word count: ${count}`;
+    }
+
     function renderRules() {
         rules.forEach((rule) => {
             if (rule.active) {
-                // Check if the rule element already exists
                 let ruleElement = rulesList.querySelector(`[data-rule-id="${rule.id}"]`);
-
                 if (!ruleElement) {
-                    // Rule element doesn't exist, create and append it
                     ruleElement = document.createElement('li');
                     ruleElement.classList.add('rule');
-                    ruleElement.dataset.ruleId = rule.id; // Add data attribute for identification
+                    ruleElement.dataset.ruleId = rule.id;
                     ruleElement.textContent = rule.description;
-                     // Add initial state class
                     ruleElement.classList.add(rule.satisfied ? 'satisfied' : 'unsatisfied');
                     rulesList.appendChild(ruleElement);
-                     // Optional: Add a subtle animation class for newly added rules
-                     ruleElement.style.animation = 'fadeInRule 0.5s ease forwards';
-
+                    ruleElement.style.animation = 'fadeInRule 0.5s ease forwards';
                 } else {
-                    // Rule element exists, update its class if necessary
                     const isSatisfied = rule.satisfied;
                     const hasSatisfiedClass = ruleElement.classList.contains('satisfied');
-
                     if (isSatisfied && !hasSatisfiedClass) {
                         ruleElement.classList.remove('unsatisfied');
                         ruleElement.classList.add('satisfied');
@@ -156,83 +142,62 @@ document.addEventListener('DOMContentLoaded', () => {
                         ruleElement.classList.remove('satisfied');
                         ruleElement.classList.add('unsatisfied');
                     }
-                    // If class is already correct, do nothing to prevent flicker
                 }
             }
-            // No need to handle inactive rules here as they won't be in the list yet
         });
     }
 
-
-    function validateAndUpdate() {
-    // Use innerText instead of textContent to capture the actual visible text
-    const currentText = storyInput.innerText || "";
-    let needsRender = false;
-    let lastSatisfiedRuleId = 0;
-
-    rules.forEach((rule) => {
-        if (rule.active) {
-            const previousStatus = rule.satisfied;
-            rule.satisfied = rule.validator(currentText);
-
-            if (rule.satisfied !== previousStatus) {
-                needsRender = true; // Update UI if status changes
-            }
-
-            if (rule.satisfied) {
-                lastSatisfiedRuleId = Math.max(lastSatisfiedRuleId, rule.id);
-            }
-        }
-    });
-
-    // Activate the next rule if allowed
-    const nextRuleIndex = rules.findIndex(r => r.id === lastSatisfiedRuleId + 1);
-    if (nextRuleIndex !== -1 && !rules[nextRuleIndex].active) {
-         rules[nextRuleIndex].active = true;
-         needsRender = true; // Need to render the new rule
-    }
-
-    // Update UI display elements
-    updateWordCount(currentText);
-    if (needsRender) {
-        renderRules();
-    }
-    checkWinCondition();
-}
-
-    /**
-     * Updates the word count display.
-     * @param {string} text - The text to count words from.
-     */
-    function updateWordCount(text) {
-        const count = getWordCount(text);
-        wordCountDisplay.textContent = `Word count: ${count}`;
-    }
-
-    /**
-     * Checks if all rules are satisfied and updates the UI accordingly.
-     */
     function checkWinCondition() {
         const trulyAllSatisfied = rules.every(rule => rule.satisfied);
-
         if (trulyAllSatisfied) {
-            storyInput.style.borderColor = '#28a745'; // Green border (matches satisfied rule)
+            storyInput.style.borderColor = '#28a745';
             winMessage.style.display = 'block';
             downloadButton.disabled = false;
         } else {
             const anyActiveUnsatisfied = rules.some(rule => rule.active && !rule.satisfied);
-            // Use red if active rule is unsatisfied, otherwise default border
             storyInput.style.borderColor = anyActiveUnsatisfied ? '#dc3545' : '#ccc';
             winMessage.style.display = 'none';
             downloadButton.disabled = true;
         }
     }
 
-    /**
-     * Handles the download story button click.
-     */
+    function validateAndUpdate() {
+        // Use innerText to get the visible text from the contenteditable element
+        const currentText = storyInput.innerText || "";
+        console.log("Current Text:", currentText); // Debug message
+        let needsRender = false;
+        let lastSatisfiedRuleId = 0;
+
+        rules.forEach((rule) => {
+            if (rule.active) {
+                const previousStatus = rule.satisfied;
+                rule.satisfied = rule.validator(currentText);
+                if (rule.satisfied !== previousStatus) {
+                    needsRender = true;
+                    console.log(`Rule ${rule.id} status changed to ${rule.satisfied}`); // Debug detail
+                }
+                if (rule.satisfied) {
+                    lastSatisfiedRuleId = Math.max(lastSatisfiedRuleId, rule.id);
+                }
+            }
+        });
+
+        const nextRuleIndex = rules.findIndex(r => r.id === lastSatisfiedRuleId + 1);
+        if (nextRuleIndex !== -1 && !rules[nextRuleIndex].active) {
+             rules[nextRuleIndex].active = true;
+             needsRender = true;
+             console.log(`Activating rule ${rules[nextRuleIndex].id}`); // Debug detail
+        }
+
+        updateWordCount(currentText);
+        if (needsRender) {
+            renderRules();
+        }
+        checkWinCondition();
+    }
+
     function downloadStory() {
-        const storyText = storyInput.textContent || "";
+        const storyText = storyInput.innerText || "";
         const cleanedText = storyText.replace(/\s+/g, ' ').trim();
         const blob = new Blob([cleanedText], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(blob);
@@ -250,23 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
     downloadButton.addEventListener('click', downloadStory);
 
     // --- Initial Setup ---
-    renderRules(); // Initial render
+    renderRules();
     updateWordCount('');
     checkWinCondition();
-
-    // Add CSS for the fade-in animation directly via JS if not in CSS file
-    const styleSheet = document.styleSheets[0];
-    try {
-        styleSheet.insertRule(`
-            @keyframes fadeInRule {
-                from { opacity: 0; transform: translateY(5px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-        `, styleSheet.cssRules.length);
-    } catch (e) {
-        console.warn("Could not insert CSS animation rule:", e);
-        // Fallback or alternative handling if needed
-    }
-
-
 });
