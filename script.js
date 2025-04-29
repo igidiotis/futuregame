@@ -164,44 +164,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    /**
-     * Validates rules, activates the next one, and triggers UI updates.
-     */
     function validateAndUpdate() {
-        const currentText = storyInput.textContent || "";
-        let needsRender = false;
-        let lastSatisfiedRuleId = 0;
+    // Use innerText instead of textContent to capture the actual visible text
+    const currentText = storyInput.innerText || "";
+    let needsRender = false;
+    let lastSatisfiedRuleId = 0;
 
-        rules.forEach((rule) => {
-            if (rule.active) {
-                const previousStatus = rule.satisfied;
-                rule.satisfied = rule.validator(currentText);
+    rules.forEach((rule) => {
+        if (rule.active) {
+            const previousStatus = rule.satisfied;
+            rule.satisfied = rule.validator(currentText);
 
-                if (rule.satisfied !== previousStatus) {
-                    needsRender = true; // Status changed, need to update the specific rule's class
-                }
-
-                if (rule.satisfied) {
-                    lastSatisfiedRuleId = Math.max(lastSatisfiedRuleId, rule.id);
-                }
+            if (rule.satisfied !== previousStatus) {
+                needsRender = true; // Update UI if status changes
             }
-        });
 
-        // Activate the next rule if the last satisfied rule allows it
-        const nextRuleIndex = rules.findIndex(r => r.id === lastSatisfiedRuleId + 1);
-        if (nextRuleIndex !== -1 && !rules[nextRuleIndex].active) {
-             rules[nextRuleIndex].active = true;
-             needsRender = true; // Need to render the newly activated rule
+            if (rule.satisfied) {
+                lastSatisfiedRuleId = Math.max(lastSatisfiedRuleId, rule.id);
+            }
         }
+    });
 
-        // Update UI
-        updateWordCount(currentText);
-        // Render only if necessary (status change or new rule activated)
-        if (needsRender) {
-            renderRules();
-        }
-        checkWinCondition();
+    // Activate the next rule if allowed
+    const nextRuleIndex = rules.findIndex(r => r.id === lastSatisfiedRuleId + 1);
+    if (nextRuleIndex !== -1 && !rules[nextRuleIndex].active) {
+         rules[nextRuleIndex].active = true;
+         needsRender = true; // Need to render the new rule
     }
+
+    // Update UI display elements
+    updateWordCount(currentText);
+    if (needsRender) {
+        renderRules();
+    }
+    checkWinCondition();
+}
 
     /**
      * Updates the word count display.
