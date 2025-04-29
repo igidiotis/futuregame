@@ -8,106 +8,106 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Rule Definitions ---
     const rules = [
-        {
-            id: 1,
-            description: 'Getting Started: Write at least 10 words to reveal the next rules. Tip: try describing your story\'s context or setting.',
-            validator: (text) => getWordCount(text) >= 10,
-            satisfied: false,
-            active: true
+    {
+        id: 1,
+        description: 'Getting Started: Write at least 10 words to reveal the next rules. Tip: try describing your story\'s context or setting.',
+        validator: (text) => getWordCount(text) >= 10,
+        satisfied: false,
+        active: true
+    },
+    {
+        id: 2,
+        description: 'Educational Focus: Include "learning", "education", "curriculum", "pedagogy", or "instruction".',
+        validator: (text) => /\b(learning|education|curriculum(s)?|pedagog(y|ies)|instruction(s)?)\b/i.test(text),
+        satisfied: false,
+        active: false
+    },
+    {
+        id: 3,
+        description: 'AI Presence: Include "AI tutor", "holographic teacher", "neuroteacher", "quantum mentor", or "robotic professor".',
+        validator: (text) => /\b(AI tutor(s)?|holographic teacher(s)?|neuroteacher(s)?|quantum mentor(s)?|robotic professor(s)?)\b/i.test(text),
+        satisfied: false,
+        active: false
+    },
+    {
+        id: 4,
+        description: 'Future Tech: Mention "neural implant", "VR headset", "quantum projector", "holodeck", "mind-link", "nano-tutor", or "memory enhancement".',
+        validator: (text) => /\b(neural implant(s)?|VR headset(s)?|quantum projector(s)?|holodeck(s)?|mind-link(s)?|nano-tutor(s)?|memory enhancement(s)?)\b/i.test(text),
+        satisfied: false,
+        active: false
+    },
+    {
+        id: 5,
+        description: 'Minimum Length: Your story must be at least 50 words long.',
+        validator: (text) => getWordCount(text) >= 50,
+        satisfied: false,
+        active: false
+    },
+    {
+        id: 6,
+        description: 'Student Reaction: Include "excitement", "confusion", "curiosity", "wonder", "enlightenment", "frustration", or "inspiration".',
+        validator: (text) => /\b(excite(ment|d)|confus(ion|ed)|curio(sity|us)|wonder(ing|ed)?|enlighten(ment|ed)|frustrat(ion|ed)|inspir(ation|ed))\b/i.test(text),
+        satisfied: false,
+        active: false
+    },
+    {
+        id: 7,
+        description: 'Reimagined Spaces: Describe "floating classroom", "virtual academy", "orbital school", "underwater campus", "neural network hub", "cloud university", or "biosphere lab".',
+        validator: (text) => /\b(floating classroom(s)?|virtual academ(y|ies)|orbital school(s)?|underwater campus(es)?|neural network hub(s)?|cloud universit(y|ies)|biosphere lab(s)?)\b/i.test(text),
+        satisfied: false,
+        active: false
+    },
+    {
+        id: 8,
+        description: 'Future Timeline: Include a specific year beyond 2030 (e.g., "2035", "2157").',
+        validator: (text) => /\b(20[3-9]\d|2[1-9]\d\d|[3-9]\d{3})\b/.test(text),
+        satisfied: false,
+        active: false
+    },
+    {
+        id: 9,
+        description: 'Learning Hurdles: Mention "data overload", "AI bias", "privacy concerns", "attention scarcity", "digital divide", "information authentication", or "sensory integration".',
+        validator: (text) => /\b(data overload|AI bias(es)?|privacy concern(s)?|attention scarcity|digital divide(s)?|information authentication|sensory integration)\b/i.test(text),
+        satisfied: false,
+        active: false
+    },
+    {
+        id: 10,
+        description: 'Multisensory Experience: Include a vivid sensory detail like "hum of...", "glow of...", "scent of...", "texture of...", "taste of...", or "resonance of...".',
+        validator: (text) => /\b(hum(ming)? of|glow(ing)? of|scent of|smell of|texture of|feel of|taste of|resonance of|sound of)\b/i.test(text),
+        satisfied: false,
+        active: false
+    },
+    {
+        id: 11,
+        description: 'Paradigm Shift: Reference "learning is gamified", "exams are obsolete", "knowledge is crowdsourced", "skills over memorisation", "continuous neural updating", or "telepathic collaboration".',
+        validator: (text) => /\b(learning is gamified|gamified learning|exams are obsolete|obsolete exams|knowledge is crowdsourced|crowdsourced knowledge|skills over memoris(ation|ation)|continuous neural updating|neural updating|telepathic collaboration)\b/i.test(text),
+        satisfied: false,
+        active: false
+    },
+    {
+        id: 12,
+        description: 'Narrative Structure Markers: Include "in this future", "however", and "ultimately".',
+        validator: (text) => {
+            const lowerText = text.toLowerCase();
+            return lowerText.includes("in this future") &&
+                   lowerText.includes("however") &&
+                   lowerText.includes("ultimately");
         },
-        {
-            id: 2,
-            description: 'Educational Focus: Include "learning", "education", "curriculum", "pedagogy", or "instruction".',
-            validator: (text) => /\b(learning|education|curriculum|pedagogy|instruction)\b/i.test(text),
-            satisfied: false,
-            active: false
+        satisfied: false,
+        active: false
+    },
+    {
+        id: 13,
+        description: 'Numerical Balance: Your final word count must be a multiple of 10 (and at least 50).',
+        validator: (text) => {
+            const count = getWordCount(text);
+            return count >= 50 && count % 10 === 0;
         },
-          {
-            id: 3,
-            description: 'AI Presence: Include "AI tutor", "holographic teacher", "neuroteacher", "quantum mentor", or "robotic professor".',
-            validator: (text) => /\b(AI tutor|holographic teacher|neuroteacher|quantum mentor|robotic professor)\b/i.test(text),
-            satisfied: false,
-            active: false
-        },
-         {
-            id: 4,
-            description: 'Future Tech: Mention "neural implant", "VR headset", "quantum projector", "holodeck", "mind-link", "nano-tutor", or "memory enhancement".',
-            validator: (text) => /\b(neural implant|VR headset|quantum projector|holodeck|mind-link|nano-tutor|memory enhancement)\b/i.test(text),
-            satisfied: false,
-            active: false
-        },
-        {
-            id: 5,
-            description: 'Minimum Length: Your story must be at least 50 words long.',
-            validator: (text) => getWordCount(text) >= 50,
-            satisfied: false,
-            active: false
-        },
-        {
-            id: 6,
-            description: 'Student Reaction: Include "excitement", "confusion", "curiosity", "wonder", "enlightenment", "frustration", or "inspiration".',
-            validator: (text) => /\b(excitement|excited|confused|confusion|curious|curiosity|wonder|enlightenment|frustration|frustrated|inspiration|inspired)\b/i.test(text),
-            satisfied: false,
-            active: false
-        },
-        {
-            id: 7,
-            description: 'Reimagined Spaces: Describe "floating classroom", "virtual academy", "orbital school", "underwater campus", "neural network hub", "cloud university", or "biosphere lab".',
-            validator: (text) => /\b(floating classroom|virtual academy|orbital school|underwater campus|neural network hub|cloud university|biosphere lab)\b/i.test(text),
-            satisfied: false,
-            active: false
-        },
-        {
-            id: 8,
-            description: 'Future Timeline: Include a specific year beyond 2030 (e.g., "2035", "2157").',
-            validator: (text) => /\b(20[3-9]\d|2[1-9]\d\d|[3-9]\d{3})\b/.test(text),
-            satisfied: false,
-            active: false
-        },
-        {
-            id: 9,
-            description: 'Learning Hurdles: Mention "data overload", "AI bias", "privacy concerns", "attention scarcity", "digital divide", "information authentication", or "sensory integration".',
-            validator: (text) => /\b(data overload|AI bias|privacy concerns|attention scarcity|digital divide|information authentication|sensory integration)\b/i.test(text),
-            satisfied: false,
-            active: false
-        },
-        {
-            id: 10,
-            description: 'Multisensory Experience: Include a vivid sensory detail like "hum of...", "glow of...", "scent of...", "texture of...", "taste of...", or "resonance of...".',
-            validator: (text) => /\b(hum of|glow of|scent of|texture of|taste of|resonance of)\b/i.test(text),
-            satisfied: false,
-            active: false
-        },
-        {
-            id: 11,
-            description: 'Paradigm Shift: Reference "learning is gamified", "exams are obsolete", "knowledge is crowdsourced", "skills over memorisation", "continuous neural updating", or "telepathic collaboration".',
-            validator: (text) => /\b(learning is gamified|exams are obsolete|knowledge is crowdsourced|skills over memorisation|continuous neural updating|telepathic collaboration)\b/i.test(text),
-            satisfied: false,
-            active: false
-        },
-         {
-            id: 12,
-            description: 'Narrative Structure Markers: Include "in this future", "however", and "ultimately".',
-            validator: (text) => {
-                const lowerText = text.toLowerCase();
-                return lowerText.includes("in this future") &&
-                       lowerText.includes("however") &&
-                       lowerText.includes("ultimately");
-            },
-            satisfied: false,
-            active: false
-        },
-        {
-            id: 13,
-            description: 'Numerical Balance: Your final word count must be a multiple of 10 (and at least 50).',
-            validator: (text) => {
-                const count = getWordCount(text);
-                return count >= 50 && count % 10 === 0;
-            },
-            satisfied: false,
-            active: false
-        }
-    ];
+        satisfied: false,
+        active: false
+    }
+];
 
     // --- Helper Functions ---
     function getWordCount(text) {
