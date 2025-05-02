@@ -183,60 +183,83 @@ const rules = [
     }
 ];
 
-// Function to render a rule with help icon
+// Function to render a rule with expandable help
 function renderRule(rule) {
     const ruleElement = document.createElement('div');
     ruleElement.className = `rule-container ${rule.satisfied ? 'satisfied' : ''} ${!rule.active ? 'inactive' : ''} ${rule.struggling ? 'struggling' : ''}`;
     ruleElement.id = `rule-${rule.id}`;
     
+    // Create rule header (contains the rule text and help icon)
+    const ruleHeader = document.createElement('div');
+    ruleHeader.className = 'rule-header';
+    
+    // Rule text
     const ruleText = document.createElement('div');
     ruleText.className = 'rule-text';
     ruleText.innerText = rule.description;
     
-    ruleElement.appendChild(ruleText);
+    // Add elements to header
+    ruleHeader.appendChild(ruleText);
     
     // Only add help icon for active, unsatisfied rules
     if (rule.active && !rule.satisfied) {
         const helpIcon = document.createElement('div');
         helpIcon.className = 'help-icon';
         helpIcon.innerText = '?';
-        helpIcon.addEventListener('click', () => toggleHelpTooltip(rule.id));
         
-        const helpTooltip = document.createElement('div');
-        helpTooltip.className = 'help-tooltip';
-        helpTooltip.id = `help-${rule.id}`;
-        helpTooltip.innerText = rule.helpText || 'Try to fulfill this rule to continue your story.';
+        // Add help icon to header
+        ruleHeader.appendChild(helpIcon);
         
-        ruleElement.appendChild(helpIcon);
-        ruleElement.appendChild(helpTooltip);
+        // Make the whole header clickable to toggle help
+        ruleHeader.addEventListener('click', () => {
+            toggleHelp(rule.id);
+        });
     }
+    
+    // Create expandable help content section
+    const helpContent = document.createElement('div');
+    helpContent.className = 'help-content';
+    helpContent.id = `help-${rule.id}`;
+    helpContent.innerText = rule.helpText || 'Try to fulfill this rule to continue your story.';
+    
+    // Add all elements to the rule container
+    ruleElement.appendChild(ruleHeader);
+    ruleElement.appendChild(helpContent);
     
     return ruleElement;
 }
 
-// Toggle help tooltip visibility
-function toggleHelpTooltip(ruleId) {
-    const tooltip = document.getElementById(`help-${ruleId}`);
+// Toggle help expansion for a specific rule
+function toggleHelp(ruleId) {
     const ruleElement = document.getElementById(`rule-${ruleId}`);
-    
-    if (tooltip && ruleElement) {
-        // Get position of the rule element
-        const ruleRect = ruleElement.getBoundingClientRect();
-        const helpIcon = ruleElement.querySelector('.help-icon');
-        const helpIconRect = helpIcon ? helpIcon.getBoundingClientRect() : null;
+    if (ruleElement) {
+        // Toggle expanded class
+        ruleElement.classList.toggle('help-expanded');
         
-        // Position the tooltip relative to the help icon
-        if (helpIconRect) {
-            tooltip.style.top = `${helpIconRect.bottom + 8}px`;
-            tooltip.style.left = `${helpIconRect.left - 250}px`; // Position it to the left of the icon
-        } else {
-            // Fallback positioning relative to the rule
-            tooltip.style.top = `${ruleRect.bottom + 8}px`;
-            tooltip.style.left = `${ruleRect.right - 280}px`;
+        // Mark that we've shown help for this rule
+        const rule = rules.find(r => r.id === ruleId);
+        if (rule && ruleElement.classList.contains('help-expanded')) {
+            rule.helpShown = true;
+        }
+    }
+}
+
+// Show help for a specific rule
+function showHelp(ruleId) {
+    const ruleElement = document.getElementById(`rule-${ruleId}`);
+    if (ruleElement && !ruleElement.classList.contains('help-expanded')) {
+        ruleElement.classList.add('help-expanded');
+        
+        // Mark that we've shown help for this rule
+        const rule = rules.find(r => r.id === ruleId);
+        if (rule) {
+            rule.helpShown = true;
         }
         
-        // Toggle visibility
-        tooltip.classList.toggle('visible');
+        // Auto-hide after 8 seconds
+        setTimeout(() => {
+            ruleElement.classList.remove('help-expanded');
+        }, 8000);
     }
 }
 
@@ -250,45 +273,13 @@ function monitorUserStruggle() {
             
             if (timeActive > STRUGGLE_TIME) {
                 rule.struggling = true;
-                showHelpTooltip(rule.id);
-                rule.helpShown = true;
+                showHelp(rule.id);
                 
                 // Update the rule display
                 updateRulesList();
             }
         }
     });
-}
-
-// Show help tooltip
-function showHelpTooltip(ruleId) {
-    const tooltip = document.getElementById(`help-${ruleId}`);
-    const ruleElement = document.getElementById(`rule-${ruleId}`);
-    
-    if (tooltip && ruleElement) {
-        // Get position of the rule element
-        const ruleRect = ruleElement.getBoundingClientRect();
-        const helpIcon = ruleElement.querySelector('.help-icon');
-        const helpIconRect = helpIcon ? helpIcon.getBoundingClientRect() : null;
-        
-        // Position the tooltip relative to the help icon
-        if (helpIconRect) {
-            tooltip.style.top = `${helpIconRect.bottom + 8}px`;
-            tooltip.style.left = `${helpIconRect.left - 250}px`; // Position it to the left of the icon
-        } else {
-            // Fallback positioning relative to the rule
-            tooltip.style.top = `${ruleRect.bottom + 8}px`;
-            tooltip.style.left = `${ruleRect.right - 280}px`;
-        }
-        
-        // Show the tooltip
-        tooltip.classList.add('visible');
-        
-        // Auto-hide after 8 seconds
-        setTimeout(() => {
-            tooltip.classList.remove('visible');
-        }, 8000);
-    }
 }
 
 // Update the rules list in the UI - Modified to show unsatisfied rules first
@@ -447,26 +438,33 @@ function initGame() {
         restartButton.addEventListener('click', restartGame);
     }
     
-    // Add download button to completion message
+    // Add download button to completion message if it doesn't exist
     const completionMessage = document.getElementById('completion-message');
     if (completionMessage) {
-        const downloadButton = document.createElement('button');
-        downloadButton.className = 'button';
-        downloadButton.id = 'download-button';
-        downloadButton.innerText = 'Download Story';
-        downloadButton.addEventListener('click', downloadStory);
+        let downloadButton = document.getElementById('download-button');
         
-        // Add some space between buttons
-        const spacer = document.createElement('span');
-        spacer.style.margin = '0 10px';
-        
-        // Find the restart button and insert the download button before it
-        const existingRestartButton = document.getElementById('restart-button');
-        if (existingRestartButton && existingRestartButton.parentNode) {
-            existingRestartButton.parentNode.insertBefore(downloadButton, existingRestartButton);
-            existingRestartButton.parentNode.insertBefore(spacer, existingRestartButton);
+        if (!downloadButton) {
+            downloadButton = document.createElement('button');
+            downloadButton.className = 'button';
+            downloadButton.id = 'download-button';
+            downloadButton.innerText = 'Download Story';
+            downloadButton.addEventListener('click', downloadStory);
+            
+            // Add some space between buttons
+            const spacer = document.createElement('span');
+            spacer.style.margin = '0 10px';
+            
+            // Find the restart button and insert the download button before it
+            const existingRestartButton = document.getElementById('restart-button');
+            if (existingRestartButton && existingRestartButton.parentNode) {
+                existingRestartButton.parentNode.insertBefore(downloadButton, existingRestartButton);
+                existingRestartButton.parentNode.insertBefore(spacer, existingRestartButton);
+            } else {
+                completionMessage.appendChild(downloadButton);
+            }
         } else {
-            completionMessage.appendChild(downloadButton);
+            // Make sure the event listener is attached
+            downloadButton.addEventListener('click', downloadStory);
         }
     }
     
@@ -479,42 +477,3 @@ function initGame() {
 
 // Initialize the game when the DOM is loaded
 document.addEventListener('DOMContentLoaded', initGame);
-
-function createHelpModal() {
-    if (document.getElementById('help-modal-overlay')) { return; }
-    
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay';
-    overlay.id = 'help-modal-overlay';
-    
-    const modal = document.createElement('div');
-    modal.className = 'help-modal';
-    
-    const title = document.createElement('h3');
-    title.className = 'modal-title';
-    title.id = 'modal-title';
-    title.textContent = 'Help';
-    
-    const content = document.createElement('div');
-    content.className = 'modal-content';
-    content.id = 'modal-content';
-    
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'close-button';
-    closeBtn.innerHTML = '&times;';
-    closeBtn.addEventListener('click', closeHelpModal);
-    
-    modal.appendChild(title);
-    modal.appendChild(content);
-    modal.appendChild(closeBtn);
-    overlay.appendChild(modal);
-    
-    // Always append directly to document.body
-    document.body.appendChild(overlay);
-    
-    overlay.addEventListener('click', function(e) {
-        if (e.target === overlay) {
-            closeHelpModal();
-        }
-    });
-}
