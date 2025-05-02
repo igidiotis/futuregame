@@ -6,109 +6,185 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadButton = document.getElementById('download-button');
     const winMessage = document.getElementById('win-message');
 
-    // --- Rule Definitions ---
-    const rules = [
+    // Helper function to check if words from two different sets appear close to each other
+const areConceptsNear = (text, conceptSet1, conceptSet2, maxDistance = 50) => {
+    text = text.toLowerCase();
+    
+    // Find all matches for both concept sets
+    const matches1 = [];
+    const matches2 = [];
+    
+    conceptSet1.forEach(word => {
+        let index = text.indexOf(word);
+        while (index !== -1) {
+            matches1.push({ word, index });
+            index = text.indexOf(word, index + 1);
+        }
+    });
+    
+    conceptSet2.forEach(word => {
+        let index = text.indexOf(word);
+        while (index !== -1) {
+            matches2.push({ word, index });
+            index = text.indexOf(word, index + 1);
+        }
+    });
+    
+    // Check if any pair of matches is within maxDistance
+    for (const match1 of matches1) {
+        for (const match2 of matches2) {
+            if (Math.abs(match1.index - match2.index) <= maxDistance) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+};
+
+// Example usage in rules:
+const rules = [
     {
         id: 1,
         description: 'Getting Started: Write at least 10 words to reveal the next rules. Tip: try describing your story\'s context or setting.',
+        helpText: 'Just start writing a few words about your future education scenario to begin.',
         validator: (text) => getWordCount(text) >= 10,
         satisfied: false,
         active: true
     },
     {
         id: 2,
-        description: 'Educational Focus: Include "learning", "education", "curriculum", "pedagogy", or "instruction".',
-        validator: (text) => /\b(learning|education|curriculum(s)?|pedagog(y|ies)|instruction(s)?)\b/i.test(text),
+        description: 'Educational Focus: Describe some aspect of learning or education in your future world.',
+        helpText: 'Try mentioning something about how people learn, what they study, or how education works in your future scenario.',
+        validator: (text) => {
+            const educationConcepts = ['learn', 'educat', 'teach', 'study', 'school', 'class', 'course', 'curriculum', 'knowledge', 'skill', 'instruct'];
+            return educationConcepts.some(concept => text.toLowerCase().includes(concept));
+        },
         satisfied: false,
         active: false
     },
     {
         id: 3,
-        description: 'AI Presence: Include "AI tutor", "holographic teacher", "neuroteacher", "quantum mentor", or "robotic professor".',
-        validator: (text) => /\b(AI tutor(s)?|holographic teacher(s)?|neuroteacher(s)?|quantum mentor(s)?|robotic professor(s)?)\b/i.test(text),
+        description: 'Future Educator: Describe who or what facilitates learning in your future world.',
+        helpText: 'Consider adding a teacher, tutor, or mentor figure with futuristic or technological elements to your story.',
+        validator: (text) => {
+            const educatorConcepts = ['teach', 'tutor', 'instructor', 'professor', 'mentor', 'guide', 'coach'];
+            const futureConcepts = ['ai', 'robot', 'digital', 'holo', 'virtual', 'quantum', 'neural', 'auto', 'cyber', 'tech'];
+            return areConceptsNear(text, educatorConcepts, futureConcepts);
+        },
         satisfied: false,
         active: false
     },
     {
         id: 4,
-        description: 'Future Tech: Mention "neural implant", "VR headset", "quantum projector", "holodeck", "mind-link", "nano-tutor", or "memory enhancement".',
-        validator: (text) => /\b(neural implant(s)?|VR headset(s)?|quantum projector(s)?|holodeck(s)?|mind-link(s)?|nano-tutor(s)?|memory enhancement(s)?)\b/i.test(text),
+        description: 'Learning Technology: Describe a technology that helps people learn in your future world.',
+        helpText: 'Add a futuristic device, system, or technology that students use for learning in your scenario.',
+        validator: (text) => {
+            const techConcepts = ['device', 'system', 'technology', 'tech', 'machine', 'tool', 'equipment', 'interface', 'headset', 'implant', 'computer', 'program', 'software'];
+            const futureConcepts = ['neural', 'vr', 'ar', 'hologram', 'quantum', 'nano', 'digital', 'virtual', 'simul', 'ai', 'brain', 'mind'];
+            return areConceptsNear(text, techConcepts, futureConcepts);
+        },
         satisfied: false,
         active: false
     },
     {
         id: 5,
-        description: 'Minimum Length: Your story must be at least 50 words long.',
+        description: 'Growing Story: Your story must be at least 50 words long to continue.',
+        helpText: 'Keep expanding your story. Add more details about the setting, characters, or technologies.',
         validator: (text) => getWordCount(text) >= 50,
         satisfied: false,
         active: false
     },
     {
         id: 6,
-        description: 'Student Reaction: Include "excitement", "confusion", "curiosity", "wonder", "enlightenment", "frustration", or "inspiration".',
-        validator: (text) => /\b(excite(ment|d)|confus(ion|ed)|curio(sity|us)|wonder(ing|ed)?|enlighten(ment|ed)|frustrat(ion|ed)|inspir(ation|ed))\b/i.test(text),
+        description: 'Student Experience: How do learners feel about education in your future world?',
+        helpText: 'Include how students emotionally respond to learning in this future - are they excited, confused, curious, inspired?',
+        validator: (text) => {
+            const emotionConcepts = ['feel', 'emotion', 'excite', 'thrill', 'confus', 'curious', 'wonder', 'awe', 'frustrat', 'inspir', 'joy', 'fear', 'anxiety', 'hope', 'content', 'satisf', 'overwhelm', 'calm', 'stress'];
+            const learnerConcepts = ['student', 'learner', 'child', 'people', 'person', 'participant', 'user', 'mind', 'brain', 'pupil'];
+            return areConceptsNear(text, emotionConcepts, learnerConcepts);
+        },
         satisfied: false,
         active: false
     },
     {
         id: 7,
-        description: 'Reimagined Spaces: Describe "floating classroom", "virtual academy", "orbital school", "underwater campus", "neural network hub", "cloud university", or "biosphere lab".',
-        validator: (text) => /\b(floating classroom(s)?|virtual academ(y|ies)|orbital school(s)?|underwater campus(es)?|neural network hub(s)?|cloud universit(y|ies)|biosphere lab(s)?)\b/i.test(text),
+        description: 'Learning Environment: Where does education take place in your future world?',
+        helpText: 'Describe the physical or virtual space where learning happens - is it floating in the sky, underwater, in virtual reality, or somewhere else futuristic?',
+        validator: (text) => {
+            const spaceConcepts = ['classroom', 'school', 'academy', 'university', 'campus', 'lab', 'center', 'space', 'environment', 'room', 'hall', 'hub', 'dome'];
+            const futureConcepts = ['float', 'fly', 'orbit', 'space', 'virtual', 'digital', 'holo', 'cloud', 'underwater', 'bio', 'eco', 'network', 'connect'];
+            return areConceptsNear(text, spaceConcepts, futureConcepts);
+        },
         satisfied: false,
         active: false
     },
     {
         id: 8,
-        description: 'Future Timeline: Include a specific year beyond 2030 (e.g., "2035", "2157").',
+        description: 'Future Timeline: When does your story take place? Include a specific year beyond 2030.',
+        helpText: 'Add a future year to your story (like 2045, 2087, 3000, etc.) to establish when these events take place.',
         validator: (text) => /\b(20[3-9]\d|2[1-9]\d\d|[3-9]\d{3})\b/.test(text),
         satisfied: false,
         active: false
     },
     {
         id: 9,
-        description: 'Learning Hurdles: Mention "data overload", "AI bias", "privacy concerns", "attention scarcity", "digital divide", "information authentication", or "sensory integration".',
-        validator: (text) => /\b(data overload|AI bias(es)?|privacy concern(s)?|attention scarcity|digital divide(s)?|information authentication|sensory integration)\b/i.test(text),
+        description: 'Education Challenge: What problem or challenge exists in your future education system?',
+        helpText: 'No system is perfect - what difficulties or problems might students or teachers face with this future educational approach?',
+        validator: (text) => {
+            const challengeConcepts = ['problem', 'challenge', 'issue', 'difficulty', 'obstacle', 'hurdle', 'concern', 'risk', 'threat', 'danger', 'limit', 'drawback', 'overload', 'scarcity', 'divide', 'bias', 'privacy', 'security', 'distract'];
+            const educationConcepts = ['learn', 'educat', 'teach', 'study', 'school', 'class', 'course', 'curriculum', 'knowledge', 'skill', 'instruct', 'student', 'ai', 'data', 'tech', 'system'];
+            return areConceptsNear(text, challengeConcepts, educationConcepts);
+        },
         satisfied: false,
         active: false
     },
     {
         id: 10,
-        description: 'Multisensory Experience: Include a vivid sensory detail like "hum of...", "glow of...", "scent of...", "texture of...", "taste of...", or "resonance of...".',
-        validator: (text) => /\b(hum(ming)? of|glow(ing)? of|scent of|smell of|texture of|feel of|taste of|resonance of|sound of)\b/i.test(text),
+        description: 'Sensory Detail: Include a sensory experience (sight, sound, smell, taste, touch) in your future learning environment.',
+        helpText: 'Make your world come alive by describing what students might see, hear, smell, taste, or feel in this environment.',
+        validator: (text) => {
+            const sensoryConcepts = ['hear', 'sound', 'noise', 'see', 'light', 'color', 'smell', 'scent', 'aroma', 'taste', 'flavor', 'feel', 'touch', 'texture', 'vibration', 'hum', 'glow', 'shine', 'soft', 'hard', 'warm', 'cool'];
+            return sensoryConcepts.some(sense => text.toLowerCase().includes(sense));
+        },
         satisfied: false,
         active: false
     },
     {
         id: 11,
-        description: 'Paradigm Shift: Reference "learning is gamified", "exams are obsolete", "knowledge is crowdsourced", "skills over memorisation", "continuous neural updating", or "telepathic collaboration".',
-        validator: (text) => /\b(learning is gamified|gamified learning|exams are obsolete|obsolete exams|knowledge is crowdsourced|crowdsourced knowledge|skills over memoris(ation|ation)|continuous neural updating|neural updating|telepathic collaboration)\b/i.test(text),
+        description: 'Educational Shift: How has the approach to education fundamentally changed in your future world?',
+        helpText: 'Describe how education philosophies or methods have evolved - what old approaches have been replaced or transformed?',
+        validator: (text) => {
+            const changeConcepts = ['chang', 'transform', 'shift', 'revolut', 'replac', 'new', 'differ', 'obsolete', 'abandon', 'evolv', 'reform', 'reimagin', 'redefin', 'innovat'];
+            const educationConcepts = ['learn', 'educat', 'teach', 'study', 'curriculum', 'exam', 'test', 'memoriz', 'knowledge', 'skill', 'grade', 'assessment', 'class', 'course'];
+            return areConceptsNear(text, changeConcepts, educationConcepts);
+        },
         satisfied: false,
         active: false
     },
     {
         id: 12,
-        description: 'Narrative Structure Markers: Include "in this future", "however", and "ultimately".',
+        description: 'Narrative Structure: Make sure your story has a clear beginning, middle with a challenge, and conclusion.',
+        helpText: 'Structure your story with multiple paragraphs. Start with the setting, introduce a challenge or conflict in the middle, and provide some resolution at the end.',
         validator: (text) => {
-            const lowerText = text.toLowerCase();
-            return lowerText.includes("in this future") &&
-                   lowerText.includes("however") &&
-                   lowerText.includes("ultimately");
+            // Check for adequate length and some paragraph separation
+            return getWordCount(text) >= 100 && text.split(/\n\s*\n/).length >= 2;
         },
         satisfied: false,
         active: false
     },
     {
         id: 13,
-        description: 'Numerical Balance: Your final word count must be a multiple of 10 (and at least 50).',
+        description: 'Story Length: Your story must be at least 100 words long to be complete.',
+        helpText: 'Your story currently has less than 100 words. Add more details about the learning experience, technologies, or emotions of the students to reach 100 words.',
         validator: (text) => {
             const count = getWordCount(text);
-            return count >= 50 && count % 10 === 0;
+            return count >= 100;
         },
         satisfied: false,
         active: false
     }
 ];
-
     // --- Helper Functions ---
     function getWordCount(text) {
         if (!text) return 0;
