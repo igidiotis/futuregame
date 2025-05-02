@@ -92,50 +92,53 @@ h1, .game-header h1 {
     margin: 0;
     border-top: 1px solid #f3f4f6;
     padding-top: 20px;
-    position: relative; /* Added to contain the absolute positioned tooltips */
 }
 
-/* Individual Rule Styling */
-.rule, .rule-container {
-    background-color: #f9fafb; /* Very light background */
+/* Rule container with expandable help */
+.rule-container {
+    background-color: #f9fafb;
     margin-bottom: 12px;
-    padding: 16px 18px;
-    border-radius: 10px; /* Rounded corners */
+    border-radius: 10px;
     border-left: 4px solid #f43f5e; /* Default unsatisfied color - pink/red */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    overflow: hidden; /* Contains the expanding help section */
+    transition: all 0.3s ease;
+}
+
+/* Unsatisfied Rule Styling */
+.rule-container:not(.satisfied) {
+    border-left-color: #f43f5e; /* Modern pink/red */
+}
+
+/* Satisfied Rule Styling */
+.rule-container.satisfied {
+    border-left-color: #10b981; /* Modern teal green */
+    background-color: #ecfdf5; /* Very light green background */
+}
+
+/* Rule Header - contains the rule text and help icon */
+.rule-header {
     display: flex;
     align-items: center;
-    position: relative; /* Important for tooltip positioning */
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02); /* Very subtle shadow */
+    padding: 16px 18px;
+    position: relative;
+    cursor: pointer;
 }
 
 /* Rule Status Symbols */
-.rule::before, .rule-container::before {
+.rule-header::before {
     font-family: 'Inter', sans-serif;
     font-weight: bold;
     margin-right: 14px;
     font-size: 1.1em;
 }
 
-/* Unsatisfied Rule Styling */
-.rule.unsatisfied, .rule-container:not(.satisfied) {
-    border-left-color: #f43f5e; /* Modern pink/red */
-    color: #4b5563;
-}
-
-.rule.unsatisfied::before, .rule-container:not(.satisfied)::before {
+.rule-container:not(.satisfied) .rule-header::before {
     content: '✗';
     color: #f43f5e;
 }
 
-/* Satisfied Rule Styling */
-.rule.satisfied, .rule-container.satisfied {
-    border-left-color: #10b981; /* Modern teal green */
-    color: #1f2937;
-    background-color: #ecfdf5; /* Very light green background */
-}
-
-.rule.satisfied::before, .rule-container.satisfied::before {
+.rule-container.satisfied .rule-header::before {
     content: '✓';
     color: #10b981;
 }
@@ -145,6 +148,11 @@ h1, .game-header h1 {
     flex-grow: 1;
     font-size: 15px;
     font-weight: 500;
+    color: #4b5563;
+}
+
+.rule-container.satisfied .rule-text {
+    color: #1f2937;
 }
 
 /* Help Icon */
@@ -172,29 +180,28 @@ h1, .game-header h1 {
     transform: scale(1.05);
 }
 
-/* Help Tooltip - Original styles (may be removed when using modal) */
-.help-tooltip {
-    position: fixed; /* Changed from absolute to fixed */
-    max-width: 280px;
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 14px 16px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    z-index: 100;
+/* Help Content Section */
+.help-content {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-top: 0 solid #e5e7eb;
     font-size: 14px;
     color: #4b5563;
-    display: none;
     line-height: 1.5;
-    animation: fadeIn 0.2s ease-out;
 }
 
-.help-tooltip.visible {
-    display: block;
+/* When help is expanded */
+.rule-container.help-expanded .help-content {
+    max-height: 200px; /* Adjust based on expected content height */
+    padding: 12px 18px 16px;
+    border-top: 1px solid #e5e7eb;
 }
 
 /* Struggling rule animation */
-.rule-container.struggling {
+.rule-container.struggling .rule-header {
     animation: pulse 2s infinite;
 }
 
@@ -296,229 +303,13 @@ button:disabled, .button:disabled {
         padding: 10px 18px;
         font-size: 0.95em;
     }
-    .rule, .rule-container {
-        padding: 12px 14px;
+    .rule-container {
         font-size: 0.92em;
     }
-    .help-tooltip {
-        width: calc(100% - 24px);
-        max-width: none;
-        left: 12px !important;
-        right: 12px !important;
+    .rule-header {
+        padding: 12px 14px;
     }
-}
-
-/*
- * Modal System Styles
- */
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000; /* Very high z-index to be above everything */
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
-}
-
-.modal-overlay.visible {
-  opacity: 1;
-  visibility: visible;
-}
-
-.help-modal {
-  background-color: white;
-  border-radius: 16px;
-  max-width: 450px;
-  width: 90%;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-  transform: translateY(20px);
-  transition: transform 0.3s ease;
-  overflow: hidden;
-}
-
-.modal-overlay.visible .help-modal {
-  transform: translateY(0);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 24px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.modal-header h3 {
-  margin: 0;
-  color: #2563eb;
-  font-size: 1.2em;
-  font-weight: 600;
-}
-
-.close-button {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: #6b7280;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  padding: 0;
-  transition: all 0.2s ease;
-}
-
-.close-button:hover {
-  background-color: #f3f4f6;
-  color: #1f2937;
-}
-
-.modal-content {
-  padding: 20px 24px;
-  line-height: 1.6;
-  color: #4b5563;
-  font-size: 15px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 640px) {
-  .help-modal {
-    width: 95%;
-    max-width: none;
-  }
-  
-  .modal-header {
-    padding: 15px 20px;
-  }
-  
-  .modal-content {
-    padding: 16px 20px;
-  }
-}
-
-// ================== REPLACE TOOLTIP LOGIC WITH THIS JAVASCRIPT ==================
-// Replace the tooltip-related code in your script.js
-
-// Function to render a rule with help icon
-function renderRule(rule) {
-    const ruleElement = document.createElement('div');
-    ruleElement.className = `rule-container ${rule.satisfied ? 'satisfied' : ''} ${!rule.active ? 'inactive' : ''} ${rule.struggling ? 'struggling' : ''}`;
-    ruleElement.id = `rule-${rule.id}`;
-    
-    const ruleText = document.createElement('div');
-    ruleText.className = 'rule-text';
-    ruleText.innerText = rule.description;
-    
-    ruleElement.appendChild(ruleText);
-    
-    // Only add help icon for active, unsatisfied rules
-    if (rule.active && !rule.satisfied) {
-        const helpIcon = document.createElement('div');
-        helpIcon.className = 'help-icon';
-        helpIcon.innerText = '?';
-        helpIcon.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent click from affecting parent elements
-            showHelpModal(rule.id);
-        });
-        
-        ruleElement.appendChild(helpIcon);
+    .help-content {
+        font-size: 13px;
     }
-    
-    return ruleElement;
-}
-
-// Show help modal
-function showHelpModal(ruleId) {
-    const rule = rules.find(r => r.id === ruleId);
-    if (!rule) return;
-    
-    // Set content
-    document.getElementById('modal-title').textContent = `Help: Rule ${ruleId}`;
-    document.getElementById('modal-content').textContent = rule.helpText || 'Try to fulfill this rule to continue your story.';
-    
-    // Show modal
-    document.getElementById('help-modal-overlay').classList.add('visible');
-    
-    // Mark that we've shown help for this rule
-    rule.helpShown = true;
-}
-
-// Close help modal
-function closeHelpModal() {
-    document.getElementById('help-modal-overlay').classList.remove('visible');
-}
-
-// Auto-show help for rules that the user is struggling with
-function monitorUserStruggle() {
-    const STRUGGLE_TIME = 20000; // 20 seconds
-    
-    rules.forEach(rule => {
-        if (rule.active && !rule.satisfied && !rule.helpShown) {
-            const timeActive = Date.now() - rule.activeSince;
-            
-            if (timeActive > STRUGGLE_TIME) {
-                rule.struggling = true;
-                showHelpModal(rule.id);
-                rule.helpShown = true;
-                
-                // Auto-hide after 8 seconds
-                setTimeout(() => {
-                    closeHelpModal();
-                }, 8000);
-                
-                // Update the rule display
-                updateRulesList();
-            }
-        }
-    });
-}
-
-// Initialize the game
-function initGame() {
-    // Set up event listeners
-    const storyInput = document.getElementById('story-input');
-    storyInput.addEventListener('input', handleTextInput);
-    
-    const restartButton = document.getElementById('restart-button');
-    if (restartButton) {
-        restartButton.addEventListener('click', restartGame);
-    }
-    
-    const downloadButton = document.getElementById('download-button');
-    if (downloadButton) {
-        downloadButton.addEventListener('click', downloadStory);
-    }
-    
-    // Set up modal close button
-    const modalCloseButton = document.getElementById('modal-close');
-    if (modalCloseButton) {
-        modalCloseButton.addEventListener('click', closeHelpModal);
-    }
-    
-    // Close modal when clicking overlay
-    const modalOverlay = document.getElementById('help-modal-overlay');
-    if (modalOverlay) {
-        modalOverlay.addEventListener('click', function(event) {
-            if (event.target === modalOverlay) {
-                closeHelpModal();
-            }
-        });
-    }
-    
-    // Set up initial rules
-    updateRulesList();
-    
-    // Set up the monitor to check periodically for user struggle
-    setInterval(monitorUserStruggle, 5000); // Check every 5 seconds
 }
