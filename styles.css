@@ -1,397 +1,161 @@
-/* Import Google Font: Inter */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
-
-/* Basic Reset and Body Styling - Light Theme */
-body {
-    background-color: #f4f7f9; /* Light gray background */
-    color: #333; /* Dark text */
-    font-family: 'Inter', sans-serif; /* Modern font */
-    line-height: 1.6;
-    margin: 0;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-}
-
-/* Container for centering content */
-.container {
-    background-color: #ffffff; /* White container background */
-    padding: 30px 40px; /* Increased padding */
-    border-radius: 8px; /* Slightly less rounded */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Softer shadow */
+/* Game specific styles */
+.game-container {
     max-width: 800px;
-    width: 100%;
-    box-sizing: border-box;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-/* Header Styling */
-header h1 {
-    font-family: 'Inter', sans-serif; /* Use main font */
-    font-weight: 700; /* Bold */
-    color: #0056b3; /* Modern dark blue */
-    text-align: center;
-    margin-bottom: 25px;
-    font-size: 1.8em; /* Adjusted size */
-}
-
-/* Introduction Text */
-.intro {
-    text-align: center;
-    margin-bottom: 25px;
-    color: #555; /* Medium-dark gray */
-    font-size: 1.05em;
-}
-
-/* Contenteditable Input Area */
-#story-input {
-    background-color: #ffffff; /* White background */
-    color: #333; /* Dark text */
-    border: 1px solid #ccc; /* Standard border */
-    padding: 15px;
-    min-height: 200px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    overflow-y: auto;
-    font-size: 16px;
-    outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
-    line-height: 1.7; /* Improve readability */
-}
-
-#story-input:focus {
-    border-color: #007bff; /* Standard blue focus */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); /* Subtle focus glow */
-}
-
-/* Styling for bold text within the editor (if re-added) */
-#story-input b, #story-input strong {
-    color: #0056b3; /* Match header color */
-    font-weight: bold;
-}
-
-/* Word Count Display */
-.info-display {
-    font-family: 'Inter', sans-serif;
-    color: #007bff; /* Use primary blue */
-    text-align: right;
+.game-header {
     margin-bottom: 20px;
-    font-size: 0.9em;
-    font-weight: 700;
+    text-align: center;
 }
 
-/* Rules Section Title */
-h2 {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    color: #333; /* Dark heading */
-    margin-top: 30px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eee; /* Lighter separator */
-    padding-bottom: 8px;
-    font-size: 1.4em;
+.textarea-container {
+    position: relative;
+    margin-bottom: 20px;
 }
 
-/* Rules List Styling */
-#rules-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-/* Individual Rule Item Styling */
-.rule {
-    background-color: #f9f9f9; /* Very light gray background for rule */
+textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+    line-height: 1.5;
+    resize: vertical;
     margin-bottom: 10px;
-    padding: 12px 15px;
-    border-radius: 4px;
-    border-left: 4px solid #dc3545; /* Default red border (unsatisfied) */
+}
+
+.word-count {
+    text-align: right;
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.rules-container {
+    margin-top: 20px;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 20px;
+}
+
+.rule-container {
+    position: relative;
     display: flex;
     align-items: center;
-    transition: background-color 0.3s ease, border-left-color 0.3s ease; /* Smooth transitions */
-    /* Removed animation properties to rely on JS for adding/updating */
-}
-
-/* Rule Status Symbols (using ::before) */
-.rule::before {
-    font-family: 'Arial', sans-serif;
-    font-weight: bold;
-    margin-right: 12px; /* Increased spacing */
-    font-size: 1.1em;
-}
-
-/* Unsatisfied Rule Styling */
-.rule.unsatisfied {
-    border-left-color: #dc3545; /* Bootstrap red */
-    color: #555; /* Keep text readable */
-}
-.rule.unsatisfied::before {
-    content: '✗';
-    color: #dc3545;
-}
-
-/* Satisfied Rule Styling */
-.rule.satisfied {
-    border-left-color: #28a745; /* Bootstrap green */
-    color: #333; /* Keep text dark */
-    background-color: #f0fff4; /* Very subtle green background */
-}
-.rule.satisfied::before {
-    content: '✓';
-    color: #28a745;
-}
-
-/* Button Styling (General) */
-button {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    background-color: #007bff; /* Primary blue */
-    color: #ffffff; /* White text */
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-button:hover:not(:disabled) {
-    background-color: #0056b3; /* Darker blue on hover */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-button:active:not(:disabled) {
-    background-color: #004085; /* Even darker blue when clicked */
-}
-
-/* Disabled Button Styling */
-button:disabled {
-    background-color: #adb5bd; /* Gray background */
-    color: #f8f9fa; /* Lighter text */
-    cursor: not-allowed;
-    box-shadow: none;
-}
-
-/* Download Button Specific Margin */
-#download-button {
-    display: block;
-    margin: 30px auto 0 auto;
-    width: fit-content;
-}
-
-/* Congratulatory Message */
-.win-message {
-    background-color: #e9f7ec; /* Light green background */
-    border: 1px solid #28a745; /* Green border */
-    color: #155724; /* Dark green text */
-    padding: 15px;
-    margin-top: 20px;
-    text-align: center;
-    border-radius: 5px;
-    font-weight: bold;
-}
-
-/* Responsive Design */
-@media (max-width: 600px) {
-    body {
-        padding: 10px;
-    }
-    .container {
-        padding: 20px;
-    }
-    header h1 {
-        font-size: 1.5em;
-    }
-    #story-input {
-        min-height: 150px;
-        font-size: 15px;
-    }
-    button {
-        padding: 9px 16px;
-        font-size: 0.95em;
-    }
-    .rule {
-        padding: 10px 12px;
-        font-size: 0.95em;
-    }
-}
-// Add these styles to your CSS
-const helpSystemStyles = `
-.rule-container {
-  position: relative;
-  display: flex;
-  align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f3f4f6;
 }
 
 .rule-text {
-  flex-grow: 1;
+    flex-grow: 1;
 }
 
+.satisfied {
+    color: #059669;
+    font-weight: 500;
+}
+
+.satisfied:before {
+    content: '✓ ';
+}
+
+.inactive {
+    color: #9ca3af;
+}
+
+/* Help system styles */
 .help-icon {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background-color: #6B7280;
-  color: white;
-  text-align: center;
-  line-height: 18px;
-  font-size: 12px;
-  margin-left: 8px;
-  cursor: pointer;
-  user-select: none;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: #6B7280;
+    color: white;
+    text-align: center;
+    line-height: 18px;
+    font-size: 12px;
+    margin-left: 8px;
+    cursor: pointer;
+    user-select: none;
 }
 
 .help-icon:hover {
-  background-color: #4B5563;
+    background-color: #4B5563;
 }
 
 .help-tooltip {
-  position: absolute;
-  right: -8px;
-  top: calc(100% + 5px);
-  background-color: #F3F4F6;
-  border: 1px solid #E5E7EB;
-  border-radius: 6px;
-  padding: 8px 12px;
-  width: 250px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  z-index: 100;
-  font-size: 14px;
-  color: #4B5563;
-  display: none;
+    position: absolute;
+    right: -8px;
+    top: calc(100% + 5px);
+    background-color: #F3F4F6;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    padding: 8px 12px;
+    width: 250px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 100;
+    font-size: 14px;
+    color: #4B5563;
+    display: none;
 }
 
 .help-tooltip.visible {
-  display: block;
+    display: block;
 }
 
 .help-tooltip:after {
-  content: '';
-  position: absolute;
-  top: -5px;
-  right: 10px;
-  width: 8px;
-  height: 8px;
-  background-color: #F3F4F6;
-  border-left: 1px solid #E5E7EB;
-  border-top: 1px solid #E5E7EB;
-  transform: rotate(45deg);
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: 10px;
+    width: 8px;
+    height: 8px;
+    background-color: #F3F4F6;
+    border-left: 1px solid #E5E7EB;
+    border-top: 1px solid #E5E7EB;
+    transform: rotate(45deg);
 }
 
 .rule-container.struggling {
-  animation: pulse 2s infinite;
+    animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.7; }
-  100% { opacity: 1; }
-}
-`;
-
-// Function to render a rule with help icon
-function renderRule(rule) {
-    const ruleElement = document.createElement('div');
-    ruleElement.className = `rule-container ${rule.satisfied ? 'satisfied' : ''} ${rule.struggling ? 'struggling' : ''}`;
-    ruleElement.id = `rule-${rule.id}`;
-    
-    const ruleText = document.createElement('div');
-    ruleText.className = 'rule-text';
-    ruleText.innerText = rule.description;
-    
-    const helpIcon = document.createElement('div');
-    helpIcon.className = 'help-icon';
-    helpIcon.innerText = '?';
-    helpIcon.addEventListener('click', () => toggleHelpTooltip(rule.id));
-    
-    const helpTooltip = document.createElement('div');
-    helpTooltip.className = 'help-tooltip';
-    helpTooltip.id = `help-${rule.id}`;
-    helpTooltip.innerText = rule.helpText || 'Try to fulfill this rule to continue your story.';
-    
-    ruleElement.appendChild(ruleText);
-    ruleElement.appendChild(helpIcon);
-    ruleElement.appendChild(helpTooltip);
-    
-    return ruleElement;
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
 }
 
-// Toggle help tooltip visibility
-function toggleHelpTooltip(ruleId) {
-    const tooltip = document.getElementById(`help-${ruleId}`);
-    tooltip.classList.toggle('visible');
+.completion-message {
+    background-color: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 20px;
+    text-align: center;
+    display: none;
 }
 
-// Auto-show help for rules that the user is struggling with
-function monitorUserStruggle() {
-    const STRUGGLE_TIME = 20000; // 20 seconds
-    
-    rules.forEach(rule => {
-        if (rule.active && !rule.satisfied && !rule.helpShown) {
-            const timeActive = Date.now() - rule.activeSince;
-            
-            if (timeActive > STRUGGLE_TIME) {
-                rule.struggling = true;
-                showHelpTooltip(rule.id);
-                rule.helpShown = true;
-                
-                // Update the rule display to show it's struggling
-                const ruleElement = document.getElementById(`rule-${rule.id}`);
-                if (ruleElement) {
-                    ruleElement.classList.add('struggling');
-                }
-            }
-        }
-    });
+.completion-message.visible {
+    display: block;
 }
 
-// Show help tooltip
-function showHelpTooltip(ruleId) {
-    const tooltip = document.getElementById(`help-${ruleId}`);
-    if (tooltip) {
-        tooltip.classList.add('visible');
-        
-        // Auto-hide after 8 seconds
-        setTimeout(() => {
-            tooltip.classList.remove('visible');
-        }, 8000);
-    }
+.button {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
 
-// Initialize rule tracking with timestamps
-function initRules() {
-    rules.forEach(rule => {
-        if (rule.active) {
-            rule.activeSince = Date.now();
-            rule.helpShown = false;
-            rule.struggling = false;
-        }
-    });
-    
-    // Set up the monitor to check periodically
-    setInterval(monitorUserStruggle, 5000); // Check every 5 seconds
-}
-
-// Track when rules become active
-function activateRule(rule) {
-    rule.active = true;
-    rule.activeSince = Date.now();
-    rule.helpShown = false;
-    rule.struggling = false;
-}
-
-// Add the CSS to the document
-function injectStyles() {
-    const styleElement = document.createElement('style');
-    styleElement.textContent = helpSystemStyles;
-    document.head.appendChild(styleElement);
-}
-
-// Call this when the game starts
-function initHelpSystem() {
-    injectStyles();
-    initRules();
+.button:hover {
+    background-color: #1d4ed8;
 }
