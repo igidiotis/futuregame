@@ -58,6 +58,8 @@ header h1 {
     outline: none;
     transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
     line-height: 1.7; /* Improve readability */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 #story-input:focus {
@@ -72,7 +74,7 @@ header h1 {
 }
 
 /* Word Count Display */
-.info-display {
+.info-display, .word-count {
     font-family: 'Inter', sans-serif;
     color: #007bff; /* Use primary blue */
     text-align: right;
@@ -93,15 +95,15 @@ h2 {
     font-size: 1.4em;
 }
 
-/* Rules List Styling */
-#rules-list {
+/* Rules Container */
+.rules-container, #rules-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-/* Individual Rule Item Styling */
-.rule {
+/* Individual Rule Item Styling - Merged with rule-container */
+.rule, .rule-container {
     background-color: #f9f9f9; /* Very light gray background for rule */
     margin-bottom: 10px;
     padding: 12px 15px;
@@ -109,12 +111,12 @@ h2 {
     border-left: 4px solid #dc3545; /* Default red border (unsatisfied) */
     display: flex;
     align-items: center;
+    position: relative;
     transition: background-color 0.3s ease, border-left-color 0.3s ease; /* Smooth transitions */
-    /* Removed animation properties to rely on JS for adding/updating */
 }
 
 /* Rule Status Symbols (using ::before) */
-.rule::before {
+.rule::before, .rule-container::before {
     font-family: 'Arial', sans-serif;
     font-weight: bold;
     margin-right: 12px; /* Increased spacing */
@@ -122,24 +124,99 @@ h2 {
 }
 
 /* Unsatisfied Rule Styling */
-.rule.unsatisfied {
+.rule.unsatisfied, .rule-container:not(.satisfied) {
     border-left-color: #dc3545; /* Bootstrap red */
     color: #555; /* Keep text readable */
 }
-.rule.unsatisfied::before {
-    content: '✕';
+
+.rule.unsatisfied::before, .rule-container:not(.satisfied)::before {
+    content: '✗';
     color: #dc3545;
 }
 
 /* Satisfied Rule Styling */
-.rule.satisfied {
+.rule.satisfied, .rule-container.satisfied {
     border-left-color: #28a745; /* Bootstrap green */
     color: #333; /* Keep text dark */
     background-color: #f0fff4; /* Very subtle green background */
 }
-.rule.satisfied::before {
+
+.rule.satisfied::before, .rule-container.satisfied::before {
     content: '✓';
     color: #28a745;
+}
+
+/* Rule Text */
+.rule-text {
+    flex-grow: 1;
+}
+
+/* Help Icon */
+.help-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #007bff; /* Match your blue theme */
+    color: white;
+    text-align: center;
+    line-height: 20px;
+    font-size: 14px;
+    margin-left: 10px;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease;
+}
+
+.help-icon:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Help Tooltip */
+.help-tooltip {
+    position: absolute;
+    right: -8px;
+    top: calc(100% + 10px);
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px 15px;
+    width: 250px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    font-size: 14px;
+    color: #555;
+    display: none;
+    line-height: 1.5;
+}
+
+.help-tooltip.visible {
+    display: block;
+}
+
+.help-tooltip:after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 12px;
+    width: 10px;
+    height: 10px;
+    background-color: #ffffff;
+    border-left: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    transform: rotate(45deg);
+}
+
+/* Struggling rule animation */
+.rule-container.struggling {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
 }
 
 /* Button Styling (General) */
@@ -182,7 +259,7 @@ button:disabled {
 }
 
 /* Congratulatory Message */
-.win-message {
+.win-message, .completion-message {
     background-color: #e9f7ec; /* Light green background */
     border: 1px solid #28a745; /* Green border */
     color: #155724; /* Dark green text */
@@ -191,6 +268,11 @@ button:disabled {
     text-align: center;
     border-radius: 5px;
     font-weight: bold;
+    display: none;
+}
+
+.win-message.visible, .completion-message.visible {
+    display: block;
 }
 
 /* Responsive Design */
@@ -212,81 +294,12 @@ button:disabled {
         padding: 9px 16px;
         font-size: 0.95em;
     }
-    .rule {
+    .rule, .rule-container {
         padding: 10px 12px;
         font-size: 0.95em;
     }
-}
-
-/* Help System Styles */
-.rule-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.rule-text {
-  flex-grow: 1;
-}
-
-.help-icon {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background-color: #6B7280;
-  color: white;
-  text-align: center;
-  line-height: 18px;
-  font-size: 12px;
-  margin-left: 8px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.help-icon:hover {
-  background-color: #4B5563;
-}
-
-.help-tooltip {
-  position: absolute;
-  right: -8px;
-  top: calc(100% + 5px);
-  background-color: #F3F4F6;
-  border: 1px solid #E5E7EB;
-  border-radius: 6px;
-  padding: 8px 12px;
-  width: 250px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  z-index: 100;
-  font-size: 14px;
-  color: #4B5563;
-  display: none;
-}
-
-.help-tooltip.visible {
-  display: block;
-}
-
-.help-tooltip:after {
-  content: '';
-  position: absolute;
-  top: -5px;
-  right: 10px;
-  width: 8px;
-  height: 8px;
-  background-color: #F3F4F6;
-  border-left: 1px solid #E5E7EB;
-  border-top: 1px solid #E5E7EB;
-  transform: rotate(45deg);
-}
-
-.rule-container.struggling {
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.7; }
-  100% { opacity: 1; }
+    .help-tooltip {
+        width: 200px;
+        right: 0;
+    }
 }
