@@ -46,7 +46,7 @@ let gameState = {
     gameComplete: false
 };
 
-// Game rules
+// Game rules with simplified validators
 const rules = [
     {
         id: 1,
@@ -61,8 +61,8 @@ const rules = [
     },
     {
         id: 2,
-        description: 'Educational Focus: Describe some aspect of learning or education in your future world.',
-        helpText: 'Try mentioning something about how people learn, what they study, or how education works in your future scenario.',
+        description: 'Educational Focus: Mention learning, education, teaching, or studying in your future world.',
+        helpText: 'Include any term related to education like: learn, teach, study, school, class, course, knowledge, or skills.',
         validator: (text) => {
             const educationConcepts = ['learn', 'educat', 'teach', 'study', 'school', 'class', 'course', 'curriculum', 'knowledge', 'skill', 'instruct'];
             return educationConcepts.some(concept => text.toLowerCase().includes(concept));
@@ -72,24 +72,41 @@ const rules = [
     },
     {
         id: 3,
-        description: 'Future Educator: Describe who or what facilitates learning in your future world.',
-        helpText: 'Consider adding a teacher, tutor, or mentor figure with futuristic or technological elements to your story.',
+        description: 'Future Educator: Mention a futuristic teacher, AI tutor, or digital learning guide.',
+        helpText: 'Combine teaching roles (teacher, tutor, instructor, professor, mentor) with futuristic elements (AI, robot, virtual, digital, holographic).',
         validator: (text) => {
-            const educatorConcepts = ['teach', 'tutor', 'instructor', 'professor', 'mentor', 'guide', 'coach'];
-            const futureConcepts = ['ai', 'robot', 'digital', 'holo', 'virtual', 'quantum', 'neural', 'auto', 'cyber', 'tech'];
-            return areConceptsNear(text, educatorConcepts, futureConcepts);
+            // Simplified approach - look for common combinations
+            const commonCombinations = [
+                'ai teacher', 'robot teacher', 'virtual teacher', 'holographic teacher', 'digital teacher',
+                'ai tutor', 'robot tutor', 'virtual tutor', 'holographic tutor', 'digital tutor', 
+                'ai instructor', 'robot instructor', 'virtual instructor', 'digital instructor',
+                'ai professor', 'virtual professor', 'digital professor',
+                'ai mentor', 'virtual mentor', 'digital mentor',
+                'teaching ai', 'teaching robot', 'teaching algorithm',
+                'educational ai', 'learning ai', 'neural teach'
+            ];
+            
+            const text_lower = text.toLowerCase();
+            return commonCombinations.some(combo => text_lower.includes(combo));
         },
         satisfied: false,
         active: false
     },
     {
         id: 4,
-        description: 'Learning Technology: Describe a technology that helps people learn in your future world.',
-        helpText: 'Add a futuristic device, system, or technology that students use for learning in your scenario.',
+        description: 'Learning Technology: Describe any futuristic technology that helps students learn.',
+        helpText: 'Mention technologies like: VR/AR headsets, neural interfaces, brain implants, holographic displays, AI systems, or any digital learning tools.',
         validator: (text) => {
-            const techConcepts = ['device', 'system', 'technology', 'tech', 'machine', 'tool', 'equipment', 'interface', 'headset', 'implant', 'computer', 'program', 'software'];
-            const futureConcepts = ['neural', 'vr', 'ar', 'hologram', 'quantum', 'nano', 'digital', 'virtual', 'simul', 'ai', 'brain', 'mind'];
-            return areConceptsNear(text, techConcepts, futureConcepts);
+            // Look for specific learning technologies
+            const learningTech = [
+                'vr', 'virtual reality', 'ar', 'augmented reality', 'neural interface', 'brain implant',
+                'holographic display', 'mind link', 'ai system', 'digital learning', 'simulation',
+                'neural network', 'quantum computer', 'nano', 'brain-computer', 'immersive', 
+                'smart classroom', 'educational robot', 'learning algorithm', 'educational software'
+            ];
+            
+            const text_lower = text.toLowerCase();
+            return learningTech.some(tech => text_lower.includes(tech));
         },
         satisfied: false,
         active: false
@@ -104,24 +121,38 @@ const rules = [
     },
     {
         id: 6,
-        description: 'Student Experience: How do learners feel about education in your future world?',
-        helpText: 'Include how students emotionally respond to learning in this future - are they excited, confused, curious, inspired?',
+        description: 'Student Experience: Describe how students feel about learning in this future world.',
+        helpText: 'Use emotional terms (excited, curious, overwhelmed, inspired) when describing students or learners.',
         validator: (text) => {
-            const emotionConcepts = ['feel', 'emotion', 'excite', 'thrill', 'confus', 'curious', 'wonder', 'awe', 'frustrat', 'inspir', 'joy', 'fear', 'anxiety', 'hope', 'content', 'satisf', 'overwhelm', 'calm', 'stress'];
-            const learnerConcepts = ['student', 'learner', 'child', 'people', 'person', 'participant', 'user', 'mind', 'brain', 'pupil'];
-            return areConceptsNear(text, emotionConcepts, learnerConcepts);
+            const emotionTerms = [
+                'excite', 'thrill', 'enjoy', 'love', 'happy', 'engage', 'interest',
+                'confus', 'overwhelm', 'frustrat', 'stress', 'anxious', 'nervous',
+                'curious', 'wonder', 'fascinate', 'captivate', 'inspir', 'motivate',
+                'bore', 'tired', 'exhaust', 'satisf', 'proud', 'accomplish',
+                'student feel', 'learner feel', 'feel about', 'emotional', 'experience'
+            ];
+            
+            const text_lower = text.toLowerCase();
+            return emotionTerms.some(term => text_lower.includes(term));
         },
         satisfied: false,
         active: false
     },
     {
         id: 7,
-        description: 'Learning Environment: Where does education take place in your future world?',
-        helpText: 'Describe the physical or virtual space where learning happens - is it floating in the sky, underwater, in virtual reality, or somewhere else futuristic?',
+        description: 'Learning Environment: Describe where education happens in your future world.',
+        helpText: 'Mention a specific location for learning: virtual spaces, floating classrooms, underwater academies, space stations, or reimagined physical spaces.',
         validator: (text) => {
-            const spaceConcepts = ['classroom', 'school', 'academy', 'university', 'campus', 'lab', 'center', 'space', 'environment', 'room', 'hall', 'hub', 'dome'];
-            const futureConcepts = ['float', 'fly', 'orbit', 'space', 'virtual', 'digital', 'holo', 'cloud', 'underwater', 'bio', 'eco', 'network', 'connect'];
-            return areConceptsNear(text, spaceConcepts, futureConcepts);
+            const environmentTerms = [
+                'classroom', 'school', 'academy', 'university', 'campus', 'learning center', 
+                'virtual space', 'digital realm', 'simulation room', 'holodeck', 
+                'floating', 'underwater', 'space station', 'orbital', 'zero gravity',
+                'learning pod', 'education dome', 'smart building', 'interactive environment',
+                'learning space', 'education zone', 'study area', 'immersive'
+            ];
+            
+            const text_lower = text.toLowerCase();
+            return environmentTerms.some(term => text_lower.includes(term));
         },
         satisfied: false,
         active: false
@@ -136,35 +167,59 @@ const rules = [
     },
     {
         id: 9,
-        description: 'Education Challenge: What problem or challenge exists in your future education system?',
-        helpText: 'No system is perfect - what difficulties or problems might students or teachers face with this future educational approach?',
+        description: 'Education Challenge: Mention a problem or challenge in your future education system.',
+        helpText: 'Describe issues like: technology dependence, privacy concerns, digital divide, information overload, or social isolation.',
         validator: (text) => {
-            const challengeConcepts = ['problem', 'challenge', 'issue', 'difficulty', 'obstacle', 'hurdle', 'concern', 'risk', 'threat', 'danger', 'limit', 'drawback', 'overload', 'scarcity', 'divide', 'bias', 'privacy', 'security', 'distract'];
-            const educationConcepts = ['learn', 'educat', 'teach', 'study', 'school', 'class', 'course', 'curriculum', 'knowledge', 'skill', 'instruct', 'student', 'ai', 'data', 'tech', 'system'];
-            return areConceptsNear(text, challengeConcepts, educationConcepts);
+            const challengeTerms = [
+                'problem', 'challenge', 'issue', 'difficult', 'obstacle', 'hurdle', 'concern',
+                'risk', 'threat', 'danger', 'limit', 'drawback', 'overload', 'scarcity',
+                'divide', 'gap', 'inequality', 'bias', 'privacy', 'security', 'distract',
+                'addiction', 'dependence', 'isolation', 'disconnect', 'burnout', 'stress',
+                'cost', 'access', 'failure', 'malfunction', 'glitch', 'barrier'
+            ];
+            
+            const text_lower = text.toLowerCase();
+            return challengeTerms.some(term => text_lower.includes(term));
         },
         satisfied: false,
         active: false
     },
     {
         id: 10,
-        description: 'Sensory Detail: Include a sensory experience (sight, sound, smell, taste, touch) in your future learning environment.',
-        helpText: 'Make your world come alive by describing what students might see, hear, smell, taste, or feel in this environment.',
+        description: 'Sensory Detail: Include what students see, hear, smell, taste, or feel in this environment.',
+        helpText: 'Describe sensations like: glowing screens, humming machines, the smell of clean air, the taste of focus-enhancing drinks, or the feeling of neural connections.',
         validator: (text) => {
-            const sensoryConcepts = ['hear', 'sound', 'noise', 'see', 'light', 'color', 'smell', 'scent', 'aroma', 'taste', 'flavor', 'feel', 'touch', 'texture', 'vibration', 'hum', 'glow', 'shine', 'soft', 'hard', 'warm', 'cool'];
-            return sensoryConcepts.some(sense => text.toLowerCase().includes(sense));
+            const sensoryTerms = [
+                'see', 'saw', 'view', 'watch', 'look', 'appear', 'visual', 'display', 'screen', 'image',
+                'hear', 'sound', 'noise', 'listen', 'audio', 'music', 'voice', 'whisper', 'hum', 'beep',
+                'smell', 'scent', 'aroma', 'odor', 'fragrance', 'nose',
+                'taste', 'flavor', 'palate', 'tongue', 'sweet', 'bitter', 'sour',
+                'feel', 'touch', 'texture', 'smooth', 'rough', 'soft', 'hard', 'warm', 'cool', 'vibration',
+                'glow', 'shine', 'bright', 'dark', 'light', 'color', 'flash', 'pulse'
+            ];
+            
+            const text_lower = text.toLowerCase();
+            return sensoryTerms.some(term => text_lower.includes(term));
         },
         satisfied: false,
         active: false
     },
     {
         id: 11,
-        description: 'Educational Shift: How has the approach to education fundamentally changed in your future world?',
-        helpText: 'Describe how education philosophies or methods have evolved - what old approaches have been replaced or transformed?',
+        description: 'Educational Shift: Describe how education has changed compared to traditional methods.',
+        helpText: 'Mention how things have changed: replacing memorization with neural uploads, transforming exams into experiential assessments, or evolving from passive to immersive learning.',
         validator: (text) => {
-            const changeConcepts = ['chang', 'transform', 'shift', 'revolut', 'replac', 'new', 'differ', 'obsolete', 'abandon', 'evolv', 'reform', 'reimagin', 'redefin', 'innovat'];
-            const educationConcepts = ['learn', 'educat', 'teach', 'study', 'curriculum', 'exam', 'test', 'memoriz', 'knowledge', 'skill', 'grade', 'assessment', 'class', 'course'];
-            return areConceptsNear(text, changeConcepts, educationConcepts);
+            const changeTerms = [
+                'chang', 'transform', 'shift', 'revolution', 'replac', 'new', 'differ', 'obsolete',
+                'abandon', 'evolv', 'reform', 'reimagin', 'redefin', 'innovat', 'disrupt',
+                'unlike', 'instead of', 'rather than', 'previously', 'traditionally', 'used to',
+                'no longer', 'compared to', 'whereas', 'evolved from', 'contrast', 
+                'old system', 'old method', 'old way', 'traditional education',
+                'before this', 'past approach'
+            ];
+            
+            const text_lower = text.toLowerCase();
+            return changeTerms.some(term => text_lower.includes(term));
         },
         satisfied: false,
         active: false
