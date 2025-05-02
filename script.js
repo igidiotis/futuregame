@@ -217,7 +217,25 @@ function renderRule(rule) {
 // Toggle help tooltip visibility
 function toggleHelpTooltip(ruleId) {
     const tooltip = document.getElementById(`help-${ruleId}`);
-    if (tooltip) {
+    const ruleElement = document.getElementById(`rule-${ruleId}`);
+    
+    if (tooltip && ruleElement) {
+        // Get position of the rule element
+        const ruleRect = ruleElement.getBoundingClientRect();
+        const helpIcon = ruleElement.querySelector('.help-icon');
+        const helpIconRect = helpIcon ? helpIcon.getBoundingClientRect() : null;
+        
+        // Position the tooltip relative to the help icon
+        if (helpIconRect) {
+            tooltip.style.top = `${helpIconRect.bottom + 8}px`;
+            tooltip.style.left = `${helpIconRect.left - 250}px`; // Position it to the left of the icon
+        } else {
+            // Fallback positioning relative to the rule
+            tooltip.style.top = `${ruleRect.bottom + 8}px`;
+            tooltip.style.left = `${ruleRect.right - 280}px`;
+        }
+        
+        // Toggle visibility
         tooltip.classList.toggle('visible');
     }
 }
@@ -245,7 +263,25 @@ function monitorUserStruggle() {
 // Show help tooltip
 function showHelpTooltip(ruleId) {
     const tooltip = document.getElementById(`help-${ruleId}`);
-    if (tooltip) {
+    const ruleElement = document.getElementById(`rule-${ruleId}`);
+    
+    if (tooltip && ruleElement) {
+        // Get position of the rule element
+        const ruleRect = ruleElement.getBoundingClientRect();
+        const helpIcon = ruleElement.querySelector('.help-icon');
+        const helpIconRect = helpIcon ? helpIcon.getBoundingClientRect() : null;
+        
+        // Position the tooltip relative to the help icon
+        if (helpIconRect) {
+            tooltip.style.top = `${helpIconRect.bottom + 8}px`;
+            tooltip.style.left = `${helpIconRect.left - 250}px`; // Position it to the left of the icon
+        } else {
+            // Fallback positioning relative to the rule
+            tooltip.style.top = `${ruleRect.bottom + 8}px`;
+            tooltip.style.left = `${ruleRect.right - 280}px`;
+        }
+        
+        // Show the tooltip
         tooltip.classList.add('visible');
         
         // Auto-hide after 8 seconds
