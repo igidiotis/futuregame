@@ -217,3 +217,181 @@ button:disabled {
         font-size: 0.95em;
     }
 }
+// Add these styles to your CSS
+const helpSystemStyles = `
+.rule-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.rule-text {
+  flex-grow: 1;
+}
+
+.help-icon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #6B7280;
+  color: white;
+  text-align: center;
+  line-height: 18px;
+  font-size: 12px;
+  margin-left: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.help-icon:hover {
+  background-color: #4B5563;
+}
+
+.help-tooltip {
+  position: absolute;
+  right: -8px;
+  top: calc(100% + 5px);
+  background-color: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  padding: 8px 12px;
+  width: 250px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 100;
+  font-size: 14px;
+  color: #4B5563;
+  display: none;
+}
+
+.help-tooltip.visible {
+  display: block;
+}
+
+.help-tooltip:after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  background-color: #F3F4F6;
+  border-left: 1px solid #E5E7EB;
+  border-top: 1px solid #E5E7EB;
+  transform: rotate(45deg);
+}
+
+.rule-container.struggling {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+`;
+
+// Function to render a rule with help icon
+function renderRule(rule) {
+    const ruleElement = document.createElement('div');
+    ruleElement.className = `rule-container ${rule.satisfied ? 'satisfied' : ''} ${rule.struggling ? 'struggling' : ''}`;
+    ruleElement.id = `rule-${rule.id}`;
+    
+    const ruleText = document.createElement('div');
+    ruleText.className = 'rule-text';
+    ruleText.innerText = rule.description;
+    
+    const helpIcon = document.createElement('div');
+    helpIcon.className = 'help-icon';
+    helpIcon.innerText = '?';
+    helpIcon.addEventListener('click', () => toggleHelpTooltip(rule.id));
+    
+    const helpTooltip = document.createElement('div');
+    helpTooltip.className = 'help-tooltip';
+    helpTooltip.id = `help-${rule.id}`;
+    helpTooltip.innerText = rule.helpText || 'Try to fulfill this rule to continue your story.';
+    
+    ruleElement.appendChild(ruleText);
+    ruleElement.appendChild(helpIcon);
+    ruleElement.appendChild(helpTooltip);
+    
+    return ruleElement;
+}
+
+// Toggle help tooltip visibility
+function toggleHelpTooltip(ruleId) {
+    const tooltip = document.getElementById(`help-${ruleId}`);
+    tooltip.classList.toggle('visible');
+}
+
+// Auto-show help for rules that the user is struggling with
+function monitorUserStruggle() {
+    const STRUGGLE_TIME = 20000; // 20 seconds
+    
+    rules.forEach(rule => {
+        if (rule.active && !rule.satisfied && !rule.helpShown) {
+            const timeActive = Date.now() - rule.activeSince;
+            
+            if (timeActive > STRUGGLE_TIME) {
+                rule.struggling = true;
+                showHelpTooltip(rule.id);
+                rule.helpShown = true;
+                
+                // Update the rule display to show it's struggling
+                const ruleElement = document.getElementById(`rule-${rule.id}`);
+                if (ruleElement) {
+                    ruleElement.classList.add('struggling');
+                }
+            }
+        }
+    });
+}
+
+// Show help tooltip
+function showHelpTooltip(ruleId) {
+    const tooltip = document.getElementById(`help-${ruleId}`);
+    if (tooltip) {
+        tooltip.classList.add('visible');
+        
+        // Auto-hide after 8 seconds
+        setTimeout(() => {
+            tooltip.classList.remove('visible');
+        }, 8000);
+    }
+}
+
+// Initialize rule tracking with timestamps
+function initRules() {
+    rules.forEach(rule => {
+        if (rule.active) {
+            rule.activeSince = Date.now();
+            rule.helpShown = false;
+            rule.struggling = false;
+        }
+    });
+    
+    // Set up the monitor to check periodically
+    setInterval(monitorUserStruggle, 5000); // Check every 5 seconds
+}
+
+// Track when rules become active
+function activateRule(rule) {
+    rule.active = true;
+    rule.activeSince = Date.now();
+    rule.helpShown = false;
+    rule.struggling = false;
+}
+
+// Add the CSS to the document
+function injectStyles() {
+    const styleElement = document.createElement('style');
+    styleElement.textContent = helpSystemStyles;
+    document.head.appendChild(styleElement);
+}
+
+// Call this when the game starts
+function initHelpSystem() {
+    injectStyles();
+    initRules();
+}
