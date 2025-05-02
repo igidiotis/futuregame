@@ -169,17 +169,7 @@ const rules = [
         satisfied: false,
         active: false
     },
-    {
-        id: 12,
-        description: 'Narrative Structure: Make sure your story has a clear beginning, middle with a challenge, and conclusion.',
-        helpText: 'Structure your story with multiple paragraphs. Start with the setting, introduce a challenge or conflict in the middle, and provide some resolution at the end.',
-        validator: (text) => {
-            // Check for adequate length and some paragraph separation
-            return getWordCount(text) >= 100 && text.split(/\n\s*\n/).length >= 2;
-        },
-        satisfied: false,
-        active: false
-    },
+    // Rule 12 (Narrative Structure) removed as requested
     {
         id: 13,
         description: 'Story Length: Your story must be at least 100 words long to be complete.',
@@ -265,15 +255,21 @@ function showHelpTooltip(ruleId) {
     }
 }
 
-// Update the rules list in the UI
+// Update the rules list in the UI - Modified to show unsatisfied rules first
 function updateRulesList() {
     const rulesList = document.getElementById('rules-list');
     rulesList.innerHTML = '';
     
-    rules.forEach(rule => {
-        if (rule.active || rule.satisfied) {
-            rulesList.appendChild(renderRule(rule));
-        }
+    // First, add active but not satisfied rules
+    const unsatisfiedRules = rules.filter(rule => rule.active && !rule.satisfied);
+    unsatisfiedRules.forEach(rule => {
+        rulesList.appendChild(renderRule(rule));
+    });
+    
+    // Then, add satisfied rules
+    const satisfiedRules = rules.filter(rule => rule.satisfied);
+    satisfiedRules.forEach(rule => {
+        rulesList.appendChild(renderRule(rule));
     });
 }
 
@@ -320,7 +316,7 @@ function activateNextRules(currentRuleId) {
         5: [6, 7], // After Growing Story -> Student Experience & Learning Environment
         7: [8, 9], // After Learning Environment -> Future Timeline & Education Challenge
         9: [10, 11], // After Education Challenge -> Sensory Detail & Educational Shift
-        11: [12, 13], // After Educational Shift -> Narrative Structure & Story Length
+        11: [13], // After Educational Shift -> Story Length (skipping Narrative Structure)
     };
     
     // Activate next rules if defined in the progression
@@ -335,6 +331,28 @@ function activateNextRules(currentRuleId) {
             }
         });
     }
+}
+
+// Function to download story as .txt file
+function downloadStory() {
+    const text = gameState.currentText;
+    const filename = "future_education_story.txt";
+    
+    // Create a Blob with the story text
+    const blob = new Blob([text], { type: "text/plain" });
+    
+    // Create a link element
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    
+    // Trigger download
+    document.body.appendChild(link);
+    link.click();
+    
+    // Clean up
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
 }
 
 // Handle text input
@@ -391,6 +409,29 @@ function initGame() {
     const restartButton = document.getElementById('restart-button');
     if (restartButton) {
         restartButton.addEventListener('click', restartGame);
+    }
+    
+    // Add download button to completion message
+    const completionMessage = document.getElementById('completion-message');
+    if (completionMessage) {
+        const downloadButton = document.createElement('button');
+        downloadButton.className = 'button';
+        downloadButton.id = 'download-button';
+        downloadButton.innerText = 'Download Story';
+        downloadButton.addEventListener('click', downloadStory);
+        
+        // Add some space between buttons
+        const spacer = document.createElement('span');
+        spacer.style.margin = '0 10px';
+        
+        // Find the restart button and insert the download button before it
+        const existingRestartButton = document.getElementById('restart-button');
+        if (existingRestartButton && existingRestartButton.parentNode) {
+            existingRestartButton.parentNode.insertBefore(downloadButton, existingRestartButton);
+            existingRestartButton.parentNode.insertBefore(spacer, existingRestartButton);
+        } else {
+            completionMessage.appendChild(downloadButton);
+        }
     }
     
     // Set up initial rules
