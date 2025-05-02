@@ -1,12 +1,9 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elements
-    const storyInput = document.getElementById('story-input');
-    const wordCountDisplay = document.getElementById('word-count');
-    const rulesList = document.getElementById('rules-list');
-    const downloadButton = document.getElementById('download-button');
-    const winMessage = document.getElementById('win-message');
+// Helper function to count words
+function getWordCount(text) {
+    return text.split(/\s+/).filter(word => word.length > 0).length;
+}
 
-    // Helper function to check if words from two different sets appear close to each other
+// Helper function to check if words from two different sets appear close to each other
 const areConceptsNear = (text, conceptSet1, conceptSet2, maxDistance = 50) => {
     text = text.toLowerCase();
     
@@ -42,7 +39,14 @@ const areConceptsNear = (text, conceptSet1, conceptSet2, maxDistance = 50) => {
     return false;
 };
 
-// Example usage in rules:
+// Game state
+let gameState = {
+    currentText: '',
+    rulesCompleted: 0,
+    gameComplete: false
+};
+
+// Game rules
 const rules = [
     {
         id: 1,
@@ -50,7 +54,10 @@ const rules = [
         helpText: 'Just start writing a few words about your future education scenario to begin.',
         validator: (text) => getWordCount(text) >= 10,
         satisfied: false,
-        active: true
+        active: true,
+        activeSince: Date.now(),
+        helpShown: false,
+        struggling: false
     },
     {
         id: 2,
@@ -185,113 +192,213 @@ const rules = [
         active: false
     }
 ];
-    // --- Helper Functions ---
-    function getWordCount(text) {
-        if (!text) return 0;
-        return text.trim().split(/\s+/).filter(word => word.length > 0).length;
-    }
 
-    function updateWordCount(text) {
-        const count = getWordCount(text);
-        wordCountDisplay.textContent = `Word count: ${count}`;
+// Function to render a rule with help icon
+function renderRule(rule) {
+    const ruleElement = document.createElement('div');
+    ruleElement.className = `rule-container ${rule.satisfied ? 'satisfied' : ''} ${!rule.active ? 'inactive' : ''} ${rule.struggling ? 'struggling' : ''}`;
+    ruleElement.id = `rule-${rule.id}`;
+    
+    const ruleText = document.createElement('div');
+    ruleText.className = 'rule-text';
+    ruleText.innerText = rule.description;
+    
+    ruleElement.appendChild(ruleText);
+    
+    // Only add help icon for active, unsatisfied rules
+    if (rule.active && !rule.satisfied) {
+        const helpIcon = document.createElement('div');
+        helpIcon.className = 'help-icon';
+        helpIcon.innerText = '?';
+        helpIcon.addEventListener('click', () => toggleHelpTooltip(rule.id));
+        
+        const helpTooltip = document.createElement('div');
+        helpTooltip.className = 'help-tooltip';
+        helpTooltip.id = `help-${rule.id}`;
+        helpTooltip.innerText = rule.helpText || 'Try to fulfill this rule to continue your story.';
+        
+        ruleElement.appendChild(helpIcon);
+        ruleElement.appendChild(helpTooltip);
     }
+    
+    return ruleElement;
+}
 
-    function renderRules() {
-        rules.forEach((rule) => {
-            if (rule.active) {
-                let ruleElement = rulesList.querySelector(`[data-rule-id="${rule.id}"]`);
-                if (!ruleElement) {
-                    ruleElement = document.createElement('li');
-                    ruleElement.classList.add('rule');
-                    ruleElement.dataset.ruleId = rule.id;
-                    ruleElement.textContent = rule.description;
-                    ruleElement.classList.add(rule.satisfied ? 'satisfied' : 'unsatisfied');
-                    rulesList.appendChild(ruleElement);
-                    ruleElement.style.animation = 'fadeInRule 0.5s ease forwards';
-                } else {
-                    const isSatisfied = rule.satisfied;
-                    const hasSatisfiedClass = ruleElement.classList.contains('satisfied');
-                    if (isSatisfied && !hasSatisfiedClass) {
-                        ruleElement.classList.remove('unsatisfied');
-                        ruleElement.classList.add('satisfied');
-                    } else if (!isSatisfied && hasSatisfiedClass) {
-                        ruleElement.classList.remove('satisfied');
-                        ruleElement.classList.add('unsatisfied');
-                    }
-                }
+// Toggle help tooltip visibility
+function toggleHelpTooltip(ruleId) {
+    const tooltip = document.getElementById(`help-${ruleId}`);
+    if (tooltip) {
+        tooltip.classList.toggle('visible');
+    }
+}
+
+// Auto-show help for rules that the user is struggling with
+function monitorUserStruggle() {
+    const STRUGGLE_TIME = 20000; // 20 seconds
+    
+    rules.forEach(rule => {
+        if (rule.active && !rule.satisfied && !rule.helpShown) {
+            const timeActive = Date.now() - rule.activeSince;
+            
+            if (timeActive > STRUGGLE_TIME) {
+                rule.struggling = true;
+                showHelpTooltip(rule.id);
+                rule.helpShown = true;
+                
+                // Update the rule display
+                updateRulesList();
+            }
+        }
+    });
+}
+
+// Show help tooltip
+function showHelpTooltip(ruleId) {
+    const tooltip = document.getElementById(`help-${ruleId}`);
+    if (tooltip) {
+        tooltip.classList.add('visible');
+        
+        // Auto-hide after 8 seconds
+        setTimeout(() => {
+            tooltip.classList.remove('visible');
+        }, 8000);
+    }
+}
+
+// Update the rules list in the UI
+function updateRulesList() {
+    const rulesList = document.getElementById('rules-list');
+    rulesList.innerHTML = '';
+    
+    rules.forEach(rule => {
+        if (rule.active || rule.satisfied) {
+            rulesList.appendChild(renderRule(rule));
+        }
+    });
+}
+
+// Check which rules are satisfied with the current text
+function validateRules(text) {
+    let activeRulesCount = 0;
+    let satisfiedActiveRulesCount = 0;
+    
+    rules.forEach(rule => {
+        if (rule.active) {
+            activeRulesCount++;
+            const isSatisfied = rule.validator(text);
+            
+            if (isSatisfied && !rule.satisfied) {
+                rule.satisfied = true;
+                activateNextRules(rule.id);
+            } else if (!isSatisfied && rule.satisfied) {
+                rule.satisfied = false;
+            }
+            
+            if (rule.satisfied) {
+                satisfiedActiveRulesCount++;
+            }
+        }
+    });
+    
+    // Check if all rules are satisfied
+    if (activeRulesCount > 0 && activeRulesCount === satisfiedActiveRulesCount && rules[rules.length - 1].satisfied) {
+        gameState.gameComplete = true;
+        document.getElementById('completion-message').classList.add('visible');
+    }
+    
+    updateRulesList();
+}
+
+// Activate the next set of rules based on the current progress
+function activateNextRules(currentRuleId) {
+    // Define rule progression
+    const ruleProgression = {
+        1: [2], // After Getting Started -> Educational Focus
+        2: [3], // After Educational Focus -> Future Educator
+        3: [4], // After Future Educator -> Learning Technology
+        4: [5], // After Learning Technology -> Growing Story (50 words)
+        5: [6, 7], // After Growing Story -> Student Experience & Learning Environment
+        7: [8, 9], // After Learning Environment -> Future Timeline & Education Challenge
+        9: [10, 11], // After Education Challenge -> Sensory Detail & Educational Shift
+        11: [12, 13], // After Educational Shift -> Narrative Structure & Story Length
+    };
+    
+    // Activate next rules if defined in the progression
+    if (ruleProgression[currentRuleId]) {
+        ruleProgression[currentRuleId].forEach(nextRuleId => {
+            const nextRule = rules.find(r => r.id === nextRuleId);
+            if (nextRule && !nextRule.active) {
+                nextRule.active = true;
+                nextRule.activeSince = Date.now();
+                nextRule.helpShown = false;
+                nextRule.struggling = false;
             }
         });
     }
+}
 
-    function checkWinCondition() {
-        const trulyAllSatisfied = rules.every(rule => rule.satisfied);
-        if (trulyAllSatisfied) {
-            storyInput.style.borderColor = '#28a745';
-            winMessage.style.display = 'block';
-            downloadButton.disabled = false;
-        } else {
-            const anyActiveUnsatisfied = rules.some(rule => rule.active && !rule.satisfied);
-            storyInput.style.borderColor = anyActiveUnsatisfied ? '#dc3545' : '#ccc';
-            winMessage.style.display = 'none';
-            downloadButton.disabled = true;
+// Handle text input
+function handleTextInput(event) {
+    const text = event.target.value;
+    gameState.currentText = text;
+    
+    // Update word count
+    const wordCount = getWordCount(text);
+    document.getElementById('word-count').innerText = `${wordCount} words`;
+    
+    // Validate rules
+    validateRules(text);
+}
+
+// Restart the game
+function restartGame() {
+    // Reset game state
+    gameState = {
+        currentText: '',
+        rulesCompleted: 0,
+        gameComplete: false
+    };
+    
+    // Reset rules
+    rules.forEach(rule => {
+        rule.satisfied = false;
+        rule.active = rule.id === 1; // Only the first rule starts active
+        rule.helpShown = false;
+        rule.struggling = false;
+        if (rule.active) {
+            rule.activeSince = Date.now();
         }
+    });
+    
+    // Clear textarea
+    const storyInput = document.getElementById('story-input');
+    storyInput.value = '';
+    document.getElementById('word-count').innerText = '0 words';
+    
+    // Hide completion message
+    document.getElementById('completion-message').classList.remove('visible');
+    
+    // Update rules list
+    updateRulesList();
+}
+
+// Initialize the game
+function initGame() {
+    // Set up event listeners
+    const storyInput = document.getElementById('story-input');
+    storyInput.addEventListener('input', handleTextInput);
+    
+    const restartButton = document.getElementById('restart-button');
+    if (restartButton) {
+        restartButton.addEventListener('click', restartGame);
     }
+    
+    // Set up initial rules
+    updateRulesList();
+    
+    // Set up the monitor to check periodically for user struggle
+    setInterval(monitorUserStruggle, 5000); // Check every 5 seconds
+}
 
-    function validateAndUpdate() {
-        // Use innerText to get the visible text from the contenteditable element
-        const currentText = storyInput.innerText || "";
-        console.log("Current Text:", currentText); // Debug message
-        let needsRender = false;
-        let lastSatisfiedRuleId = 0;
-
-        rules.forEach((rule) => {
-            if (rule.active) {
-                const previousStatus = rule.satisfied;
-                rule.satisfied = rule.validator(currentText);
-                if (rule.satisfied !== previousStatus) {
-                    needsRender = true;
-                    console.log(`Rule ${rule.id} status changed to ${rule.satisfied}`); // Debug detail
-                }
-                if (rule.satisfied) {
-                    lastSatisfiedRuleId = Math.max(lastSatisfiedRuleId, rule.id);
-                }
-            }
-        });
-
-        const nextRuleIndex = rules.findIndex(r => r.id === lastSatisfiedRuleId + 1);
-        if (nextRuleIndex !== -1 && !rules[nextRuleIndex].active) {
-             rules[nextRuleIndex].active = true;
-             needsRender = true;
-             console.log(`Activating rule ${rules[nextRuleIndex].id}`); // Debug detail
-        }
-
-        updateWordCount(currentText);
-        if (needsRender) {
-            renderRules();
-        }
-        checkWinCondition();
-    }
-
-    function downloadStory() {
-        const storyText = storyInput.innerText || "";
-        const cleanedText = storyText.replace(/\s+/g, ' ').trim();
-        const blob = new Blob([cleanedText], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'future_education_story.txt';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    }
-
-    // --- Event Listeners ---
-    storyInput.addEventListener('input', validateAndUpdate);
-    downloadButton.addEventListener('click', downloadStory);
-
-    // --- Initial Setup ---
-    renderRules();
-    updateWordCount('');
-    checkWinCondition();
-});
+// Initialize the game when the DOM is loaded
+document.addEventListener('DOMContentLoaded', initGame);
