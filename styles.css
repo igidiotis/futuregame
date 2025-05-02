@@ -92,6 +92,7 @@ h1, .game-header h1 {
     margin: 0;
     border-top: 1px solid #f3f4f6;
     padding-top: 20px;
+    position: relative; /* Added to contain the absolute positioned tooltips */
 }
 
 /* Individual Rule Styling */
@@ -103,7 +104,7 @@ h1, .game-header h1 {
     border-left: 4px solid #f43f5e; /* Default unsatisfied color - pink/red */
     display: flex;
     align-items: center;
-    position: relative;
+    position: relative; /* Important for tooltip positioning */
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0,0,0,0.02); /* Very subtle shadow */
 }
@@ -171,16 +172,14 @@ h1, .game-header h1 {
     transform: scale(1.05);
 }
 
-/* Help Tooltip */
+/* Help Tooltip - MODIFIED for fixed positioning relative to viewport */
 .help-tooltip {
-    position: absolute;
-    right: 0;
-    top: calc(100% + 8px);
+    position: fixed; /* Changed from absolute to fixed */
+    max-width: 280px;
     background-color: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
     padding: 14px 16px;
-    width: 280px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     z-index: 100;
     font-size: 14px;
@@ -192,19 +191,6 @@ h1, .game-header h1 {
 
 .help-tooltip.visible {
     display: block;
-}
-
-.help-tooltip:after {
-    content: '';
-    position: absolute;
-    top: -6px;
-    right: 16px;
-    width: 12px;
-    height: 12px;
-    background-color: #ffffff;
-    border-left: 1px solid #e5e7eb;
-    border-top: 1px solid #e5e7eb;
-    transform: rotate(45deg);
 }
 
 /* Struggling rule animation */
@@ -283,6 +269,11 @@ button:disabled, .button:disabled {
     font-size: 1.5em;
 }
 
+/* Button spacing */
+#download-button {
+    margin-right: 10px;
+}
+
 /* Responsive Design */
 @media (max-width: 640px) {
     body {
@@ -311,7 +302,8 @@ button:disabled, .button:disabled {
     }
     .help-tooltip {
         width: calc(100% - 24px);
-        left: 12px;
-        right: 12px;
+        max-width: none;
+        left: 12px !important;
+        right: 12px !important;
     }
 }
