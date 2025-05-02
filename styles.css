@@ -1,11 +1,11 @@
 /* Import Google Font: Inter */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /* Basic Reset and Body Styling - Light Theme */
 body {
-    background-color: #f4f7f9; /* Light gray background */
-    color: #333; /* Dark text */
-    font-family: 'Inter', sans-serif; /* Modern font */
+    background-color: #f0f4f8; /* Softer light blue-gray background */
+    color: #333; 
+    font-family: 'Inter', sans-serif;
     line-height: 1.6;
     margin: 0;
     padding: 20px;
@@ -16,83 +16,73 @@ body {
 }
 
 /* Container for centering content */
-.container {
-    background-color: #ffffff; /* White container background */
-    padding: 30px 40px; /* Increased padding */
-    border-radius: 8px; /* Slightly less rounded */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Softer shadow */
+.container, .game-container {
+    background-color: #ffffff;
+    padding: 32px 38px;
+    border-radius: 16px; /* More rounded corners */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); /* Softer, more elevated shadow */
     max-width: 800px;
     width: 100%;
     box-sizing: border-box;
+    margin: 20px auto;
 }
 
 /* Header Styling */
-header h1 {
-    font-family: 'Inter', sans-serif; /* Use main font */
-    font-weight: 700; /* Bold */
-    color: #0056b3; /* Modern dark blue */
+h1, .game-header h1 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: #2563eb; /* Vibrant blue */
     text-align: center;
     margin-bottom: 25px;
-    font-size: 1.8em; /* Adjusted size */
+    font-size: 2.2em;
+    letter-spacing: -0.02em; /* Tighter letter spacing for modern look */
 }
 
 /* Introduction Text */
-.intro {
+.intro, .game-header p {
     text-align: center;
-    margin-bottom: 25px;
-    color: #555; /* Medium-dark gray */
+    margin-bottom: 30px;
+    color: #4b5563; /* Darker gray for better contrast */
     font-size: 1.05em;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
 }
 
-/* Contenteditable Input Area */
-#story-input {
-    background-color: #ffffff; /* White background */
-    color: #333; /* Dark text */
-    border: 1px solid #ccc; /* Standard border */
-    padding: 15px;
+/* Textarea Input Area */
+#story-input, textarea {
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #e5e7eb; /* Lighter border */
+    padding: 20px;
     min-height: 200px;
-    border-radius: 5px;
-    margin-bottom: 15px;
+    border-radius: 12px; /* More rounded */
+    margin-bottom: 18px;
     overflow-y: auto;
     font-size: 16px;
     outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
-    line-height: 1.7; /* Improve readability */
+    transition: all 0.2s ease;
+    line-height: 1.7;
     width: 100%;
     box-sizing: border-box;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03); /* Subtle inner shadow */
+    resize: vertical;
 }
 
-#story-input:focus {
-    border-color: #007bff; /* Standard blue focus */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); /* Subtle focus glow */
-}
-
-/* Styling for bold text within the editor (if re-added) */
-#story-input b, #story-input strong {
-    color: #0056b3; /* Match header color */
-    font-weight: bold;
+#story-input:focus, textarea:focus {
+    border-color: #3b82f6; /* Bright blue focus */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); /* Subtle glow effect */
 }
 
 /* Word Count Display */
 .info-display, .word-count {
     font-family: 'Inter', sans-serif;
-    color: #007bff; /* Use primary blue */
+    color: #3b82f6; /* Brighter blue */
     text-align: right;
-    margin-bottom: 20px;
-    font-size: 0.9em;
-    font-weight: 700;
-}
-
-/* Rules Section Title */
-h2 {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    color: #333; /* Dark heading */
-    margin-top: 30px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eee; /* Lighter separator */
-    padding-bottom: 8px;
-    font-size: 1.4em;
+    margin-bottom: 25px;
+    font-size: 0.95em;
+    font-weight: 600;
 }
 
 /* Rules Container */
@@ -100,95 +90,104 @@ h2 {
     list-style: none;
     padding: 0;
     margin: 0;
+    border-top: 1px solid #f3f4f6;
+    padding-top: 20px;
 }
 
-/* Individual Rule Item Styling - Merged with rule-container */
+/* Individual Rule Styling */
 .rule, .rule-container {
-    background-color: #f9f9f9; /* Very light gray background for rule */
-    margin-bottom: 10px;
-    padding: 12px 15px;
-    border-radius: 4px;
-    border-left: 4px solid #dc3545; /* Default red border (unsatisfied) */
+    background-color: #f9fafb; /* Very light background */
+    margin-bottom: 12px;
+    padding: 16px 18px;
+    border-radius: 10px; /* Rounded corners */
+    border-left: 4px solid #f43f5e; /* Default unsatisfied color - pink/red */
     display: flex;
     align-items: center;
     position: relative;
-    transition: background-color 0.3s ease, border-left-color 0.3s ease; /* Smooth transitions */
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02); /* Very subtle shadow */
 }
 
-/* Rule Status Symbols (using ::before) */
+/* Rule Status Symbols */
 .rule::before, .rule-container::before {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: bold;
-    margin-right: 12px; /* Increased spacing */
+    margin-right: 14px;
     font-size: 1.1em;
 }
 
 /* Unsatisfied Rule Styling */
 .rule.unsatisfied, .rule-container:not(.satisfied) {
-    border-left-color: #dc3545; /* Bootstrap red */
-    color: #555; /* Keep text readable */
+    border-left-color: #f43f5e; /* Modern pink/red */
+    color: #4b5563;
 }
 
 .rule.unsatisfied::before, .rule-container:not(.satisfied)::before {
     content: '✗';
-    color: #dc3545;
+    color: #f43f5e;
 }
 
 /* Satisfied Rule Styling */
 .rule.satisfied, .rule-container.satisfied {
-    border-left-color: #28a745; /* Bootstrap green */
-    color: #333; /* Keep text dark */
-    background-color: #f0fff4; /* Very subtle green background */
+    border-left-color: #10b981; /* Modern teal green */
+    color: #1f2937;
+    background-color: #ecfdf5; /* Very light green background */
 }
 
 .rule.satisfied::before, .rule-container.satisfied::before {
     content: '✓';
-    color: #28a745;
+    color: #10b981;
 }
 
 /* Rule Text */
 .rule-text {
     flex-grow: 1;
+    font-size: 15px;
+    font-weight: 500;
 }
 
 /* Help Icon */
 .help-icon {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
-    background-color: #007bff; /* Match your blue theme */
+    background-color: #3b82f6; /* Bright blue */
     color: white;
     text-align: center;
-    line-height: 20px;
     font-size: 14px;
-    margin-left: 10px;
+    font-weight: 600;
+    margin-left: 12px;
     cursor: pointer;
     user-select: none;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.2s ease;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+    transition: all 0.2s ease;
 }
 
 .help-icon:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #2563eb; /* Darker blue on hover */
+    transform: scale(1.05);
 }
 
 /* Help Tooltip */
 .help-tooltip {
     position: absolute;
-    right: -8px;
-    top: calc(100% + 10px);
+    right: 0;
+    top: calc(100% + 8px);
     background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 12px 15px;
-    width: 250px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 14px 16px;
+    width: 280px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     z-index: 100;
     font-size: 14px;
-    color: #555;
+    color: #4b5563;
     display: none;
     line-height: 1.5;
+    animation: fadeIn 0.2s ease-out;
 }
 
 .help-tooltip.visible {
@@ -199,12 +198,12 @@ h2 {
     content: '';
     position: absolute;
     top: -6px;
-    right: 12px;
-    width: 10px;
-    height: 10px;
+    right: 16px;
+    width: 12px;
+    height: 12px;
     background-color: #ffffff;
-    border-left: 1px solid #ddd;
-    border-top: 1px solid #ddd;
+    border-left: 1px solid #e5e7eb;
+    border-top: 1px solid #e5e7eb;
     transform: rotate(45deg);
 }
 
@@ -219,87 +218,100 @@ h2 {
     100% { opacity: 1; }
 }
 
-/* Button Styling (General) */
-button {
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Button Styling */
+button, .button {
     font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    background-color: #007bff; /* Primary blue */
-    color: #ffffff; /* White text */
+    font-weight: 600;
+    background-color: #3b82f6; /* Bright blue */
+    color: #ffffff;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: 12px 24px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.25);
+    display: inline-block;
 }
 
-button:hover:not(:disabled) {
-    background-color: #0056b3; /* Darker blue on hover */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+button:hover:not(:disabled), .button:hover:not(:disabled) {
+    background-color: #2563eb; /* Darker blue on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(59, 130, 246, 0.3);
 }
 
-button:active:not(:disabled) {
-    background-color: #004085; /* Even darker blue when clicked */
+button:active:not(:disabled), .button:active:not(:disabled) {
+    background-color: #1d4ed8;
+    transform: translateY(0);
 }
 
 /* Disabled Button Styling */
-button:disabled {
-    background-color: #adb5bd; /* Gray background */
-    color: #f8f9fa; /* Lighter text */
+button:disabled, .button:disabled {
+    background-color: #d1d5db;
+    color: #9ca3af;
     cursor: not-allowed;
     box-shadow: none;
 }
 
-/* Download Button Specific Margin */
-#download-button {
-    display: block;
-    margin: 30px auto 0 auto;
-    width: fit-content;
-}
-
-/* Congratulatory Message */
+/* Completion Message */
 .win-message, .completion-message {
-    background-color: #e9f7ec; /* Light green background */
-    border: 1px solid #28a745; /* Green border */
-    color: #155724; /* Dark green text */
-    padding: 15px;
-    margin-top: 20px;
+    background-color: #ecfdf5; /* Light green */
+    border: 1px solid #10b981; /* Modern green */
+    color: #065f46; /* Dark green text */
+    padding: 20px;
+    margin-top: 30px;
     text-align: center;
-    border-radius: 5px;
-    font-weight: bold;
+    border-radius: 12px;
+    font-weight: 500;
     display: none;
+    animation: fadeIn 0.3s ease-out;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
 }
 
 .win-message.visible, .completion-message.visible {
     display: block;
 }
 
+.win-message h2, .completion-message h2 {
+    color: #065f46;
+    margin-top: 0;
+    font-size: 1.5em;
+}
+
 /* Responsive Design */
-@media (max-width: 600px) {
+@media (max-width: 640px) {
     body {
-        padding: 10px;
+        padding: 12px;
     }
-    .container {
-        padding: 20px;
+    .container, .game-container {
+        padding: 24px 20px;
+        border-radius: 12px;
     }
-    header h1 {
-        font-size: 1.5em;
+    h1, .game-header h1 {
+        font-size: 1.8em;
+        margin-bottom: 15px;
     }
-    #story-input {
+    #story-input, textarea {
         min-height: 150px;
+        padding: 16px;
         font-size: 15px;
     }
-    button {
-        padding: 9px 16px;
+    button, .button {
+        padding: 10px 18px;
         font-size: 0.95em;
     }
     .rule, .rule-container {
-        padding: 10px 12px;
-        font-size: 0.95em;
+        padding: 12px 14px;
+        font-size: 0.92em;
     }
     .help-tooltip {
-        width: 200px;
-        right: 0;
+        width: calc(100% - 24px);
+        left: 12px;
+        right: 12px;
     }
 }
