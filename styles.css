@@ -1,3 +1,105 @@
+/* Modernized Styles */
+body {
+    font-family: 'Roboto', sans-serif; /* Use a modern font */
+    background-color: #f9f9f9; /* Light background */
+    color: #333; /* Neutral text color */
+    margin: 0;
+    padding: 0;
+}
+
+.game-container {
+    max-width: 800px;
+    margin: 50px auto;
+    background-color: #ffffff; /* White card-like container */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px;
+}
+
+.game-header {
+    text-align: center;
+}
+
+.game-header h1 {
+    font-size: 2rem;
+    color: #4CAF50; /* Light green for the title */
+}
+
+.game-header p {
+    font-size: 1.2rem;
+    color: #666; /* Lighter text for description */
+}
+
+.textarea-container {
+    margin: 20px 0;
+}
+
+#story-input {
+    width: 100%;
+    height: 150px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 1rem;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle inner shadow */
+}
+
+#story-input:focus {
+    outline: none;
+    border-color: #4CAF50; /* Focus color */
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Green glow focus */
+}
+
+.word-count {
+    text-align: right;
+    font-size: 0.9rem;
+    color: #999;
+}
+
+.rules-container {
+    background-color: #f1f8e9; /* Light green background for rules */
+    border: 1px solid #c5e1a5;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.rules-container p {
+    margin: 0;
+    color: #33691e; /* Darker green text color */
+}
+
+.completion-message {
+    text-align: center;
+    background-color: #e3f2fd; /* Light blue background for completion message */
+    border: 1px solid #90caf9;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.completion-message h2 {
+    color: #0277bd; /* Darker blue title */
+}
+
+.completion-message p {
+    color: #01579b; /* Blue text color */
+}
+
+.button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #45a049; /* Slightly darker green */
+}
+
 /* Game specific styles */
 .game-container {
     max-width: 800px;
