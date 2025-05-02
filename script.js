@@ -479,3 +479,42 @@ function initGame() {
 
 // Initialize the game when the DOM is loaded
 document.addEventListener('DOMContentLoaded', initGame);
+
+function createHelpModal() {
+    if (document.getElementById('help-modal-overlay')) { return; }
+    
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.id = 'help-modal-overlay';
+    
+    const modal = document.createElement('div');
+    modal.className = 'help-modal';
+    
+    const title = document.createElement('h3');
+    title.className = 'modal-title';
+    title.id = 'modal-title';
+    title.textContent = 'Help';
+    
+    const content = document.createElement('div');
+    content.className = 'modal-content';
+    content.id = 'modal-content';
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'close-button';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.addEventListener('click', closeHelpModal);
+    
+    modal.appendChild(title);
+    modal.appendChild(content);
+    modal.appendChild(closeBtn);
+    overlay.appendChild(modal);
+    
+    // Always append directly to document.body
+    document.body.appendChild(overlay);
+    
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+            closeHelpModal();
+        }
+    });
+}
