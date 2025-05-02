@@ -3,38 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Future of Education: Speculative Fiction Game</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>Future of Education - Interactive Writing Game</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Future of Education: Speculative Fiction</h1>
-        </header>
-
-        <main>
-            <p class="intro">
-                Write a speculative fiction story about the future of education (aim for 50–250 words).
-                Follow the rules that appear below as you type to shape your narrative!
-            </p>
-
-            <div id="story-input" contenteditable="true" spellcheck="false" aria-label="Story Input Area"></div>
-
-            <div id="word-count" class="info-display">Word count: 0</div>
-
-            <h2>Rules</h2>
-            <ul id="rules-list">
-                </ul>
-
-            <div id="win-message" class="win-message" style="display: none;">
-                Congratulations! Your story meets all the requirements. Download it now!
-            </div>
-
-            <button id="download-button" disabled>Download Story</button>
-        </main>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>Future of Education</h1>
+            <p>Write a speculative scenario about the future of education. New rules will appear as you write!</p>
+        </div>
+        
+        <div class="textarea-container">
+            <textarea id="story-input" placeholder="Start writing your future education scenario here..."></textarea>
+            <div class="word-count" id="word-count">0 words</div>
+        </div>
+        
+        <div class="rules-container" id="rules-list">
+            <!-- Rules will be dynamically added here -->
+        </div>
+        
+        <div class="completion-message" id="completion-message">
+            <h2>Congratulations!</h2>
+            <p>You've completed your future education scenario. Well done!</p>
+            <button class="button" id="restart-button">Write Another Story</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
