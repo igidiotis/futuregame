@@ -1,263 +1,292 @@
-/* Modernized Styles */
+/* Import Google Font: Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+/* Basic Reset and Body Styling - Light Theme */
 body {
-    font-family: 'Roboto', sans-serif; /* Use a modern font */
-    background-color: #f9f9f9; /* Light background */
-    color: #333; /* Neutral text color */
+    background-color: #f4f7f9; /* Light gray background */
+    color: #333; /* Dark text */
+    font-family: 'Inter', sans-serif; /* Modern font */
+    line-height: 1.6;
     margin: 0;
-    padding: 0;
-}
-
-.game-container {
-    max-width: 800px;
-    margin: 50px auto;
-    background-color: #ffffff; /* White card-like container */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
-    border-radius: 8px; /* Rounded corners */
     padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
 }
 
-.game-header {
-    text-align: center;
-}
-
-.game-header h1 {
-    font-size: 2rem;
-    color: #4CAF50; /* Light green for the title */
-}
-
-.game-header p {
-    font-size: 1.2rem;
-    color: #666; /* Lighter text for description */
-}
-
-.textarea-container {
-    margin: 20px 0;
-}
-
-#story-input {
+/* Container for centering content */
+.container {
+    background-color: #ffffff; /* White container background */
+    padding: 30px 40px; /* Increased padding */
+    border-radius: 8px; /* Slightly less rounded */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    max-width: 800px;
     width: 100%;
-    height: 150px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 10px;
-    font-size: 1rem;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle inner shadow */
+    box-sizing: border-box;
+}
+
+/* Header Styling */
+header h1 {
+    font-family: 'Inter', sans-serif; /* Use main font */
+    font-weight: 700; /* Bold */
+    color: #0056b3; /* Modern dark blue */
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.8em; /* Adjusted size */
+}
+
+/* Introduction Text */
+.intro {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #555; /* Medium-dark gray */
+    font-size: 1.05em;
+}
+
+/* Contenteditable Input Area */
+#story-input {
+    background-color: #ffffff; /* White background */
+    color: #333; /* Dark text */
+    border: 1px solid #ccc; /* Standard border */
+    padding: 15px;
+    min-height: 200px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    overflow-y: auto;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+    line-height: 1.7; /* Improve readability */
 }
 
 #story-input:focus {
-    outline: none;
-    border-color: #4CAF50; /* Focus color */
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Green glow focus */
+    border-color: #007bff; /* Standard blue focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); /* Subtle focus glow */
 }
 
-.word-count {
+/* Styling for bold text within the editor (if re-added) */
+#story-input b, #story-input strong {
+    color: #0056b3; /* Match header color */
+    font-weight: bold;
+}
+
+/* Word Count Display */
+.info-display {
+    font-family: 'Inter', sans-serif;
+    color: #007bff; /* Use primary blue */
     text-align: right;
-    font-size: 0.9rem;
-    color: #999;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+    font-weight: 700;
 }
 
-.rules-container {
-    background-color: #f1f8e9; /* Light green background for rules */
-    border: 1px solid #c5e1a5;
-    border-radius: 4px;
-    padding: 15px;
-    margin: 20px 0;
+/* Rules Section Title */
+h2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: #333; /* Dark heading */
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee; /* Lighter separator */
+    padding-bottom: 8px;
+    font-size: 1.4em;
 }
 
-.rules-container p {
+/* Rules List Styling */
+#rules-list {
+    list-style: none;
+    padding: 0;
     margin: 0;
-    color: #33691e; /* Darker green text color */
 }
 
-.completion-message {
-    text-align: center;
-    background-color: #e3f2fd; /* Light blue background for completion message */
-    border: 1px solid #90caf9;
-    border-radius: 4px;
-    padding: 15px;
-    margin: 20px 0;
-}
-
-.completion-message h2 {
-    color: #0277bd; /* Darker blue title */
-}
-
-.completion-message p {
-    color: #01579b; /* Blue text color */
-}
-
-.button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.button:hover {
-    background-color: #45a049; /* Slightly darker green */
-}
-
-/* Game specific styles */
-.game-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-.game-header {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.textarea-container {
-    position: relative;
-    margin-bottom: 20px;
-}
-
-textarea {
-    width: 100%;
-    min-height: 200px;
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 16px;
-    line-height: 1.5;
-    resize: vertical;
+/* Individual Rule Item Styling */
+.rule {
+    background-color: #f9f9f9; /* Very light gray background for rule */
     margin-bottom: 10px;
-}
-
-.word-count {
-    text-align: right;
-    color: #6b7280;
-    font-size: 14px;
-    margin-bottom: 20px;
-}
-
-.rules-container {
-    margin-top: 20px;
-    border-top: 1px solid #e5e7eb;
-    padding-top: 20px;
-}
-
-.rule-container {
-    position: relative;
+    padding: 12px 15px;
+    border-radius: 4px;
+    border-left: 4px solid #dc3545; /* Default red border (unsatisfied) */
     display: flex;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.3s ease, border-left-color 0.3s ease; /* Smooth transitions */
+    /* Removed animation properties to rely on JS for adding/updating */
+}
+
+/* Rule Status Symbols (using ::before) */
+.rule::before {
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    margin-right: 12px; /* Increased spacing */
+    font-size: 1.1em;
+}
+
+/* Unsatisfied Rule Styling */
+.rule.unsatisfied {
+    border-left-color: #dc3545; /* Bootstrap red */
+    color: #555; /* Keep text readable */
+}
+.rule.unsatisfied::before {
+    content: '✕';
+    color: #dc3545;
+}
+
+/* Satisfied Rule Styling */
+.rule.satisfied {
+    border-left-color: #28a745; /* Bootstrap green */
+    color: #333; /* Keep text dark */
+    background-color: #f0fff4; /* Very subtle green background */
+}
+.rule.satisfied::before {
+    content: '✓';
+    color: #28a745;
+}
+
+/* Button Styling (General) */
+button {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    background-color: #007bff; /* Primary blue */
+    color: #ffffff; /* White text */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:hover:not(:disabled) {
+    background-color: #0056b3; /* Darker blue on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+button:active:not(:disabled) {
+    background-color: #004085; /* Even darker blue when clicked */
+}
+
+/* Disabled Button Styling */
+button:disabled {
+    background-color: #adb5bd; /* Gray background */
+    color: #f8f9fa; /* Lighter text */
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Download Button Specific Margin */
+#download-button {
+    display: block;
+    margin: 30px auto 0 auto;
+    width: fit-content;
+}
+
+/* Congratulatory Message */
+.win-message {
+    background-color: #e9f7ec; /* Light green background */
+    border: 1px solid #28a745; /* Green border */
+    color: #155724; /* Dark green text */
+    padding: 15px;
+    margin-top: 20px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    .container {
+        padding: 20px;
+    }
+    header h1 {
+        font-size: 1.5em;
+    }
+    #story-input {
+        min-height: 150px;
+        font-size: 15px;
+    }
+    button {
+        padding: 9px 16px;
+        font-size: 0.95em;
+    }
+    .rule {
+        padding: 10px 12px;
+        font-size: 0.95em;
+    }
+}
+
+/* Help System Styles */
+.rule-container {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .rule-text {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
-.satisfied {
-    color: #059669;
-    font-weight: 500;
-}
-
-.satisfied:before {
-    content: '✓ ';
-}
-
-.inactive {
-    color: #9ca3af;
-}
-
-/* Help system styles */
 .help-icon {
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background-color: #6B7280;
-    color: white;
-    text-align: center;
-    line-height: 18px;
-    font-size: 12px;
-    margin-left: 8px;
-    cursor: pointer;
-    user-select: none;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #6B7280;
+  color: white;
+  text-align: center;
+  line-height: 18px;
+  font-size: 12px;
+  margin-left: 8px;
+  cursor: pointer;
+  user-select: none;
 }
 
 .help-icon:hover {
-    background-color: #4B5563;
+  background-color: #4B5563;
 }
 
 .help-tooltip {
-    position: absolute;
-    right: -8px;
-    top: calc(100% + 5px);
-    background-color: #F3F4F6;
-    border: 1px solid #E5E7EB;
-    border-radius: 6px;
-    padding: 8px 12px;
-    width: 250px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    z-index: 100;
-    font-size: 14px;
-    color: #4B5563;
-    display: none;
+  position: absolute;
+  right: -8px;
+  top: calc(100% + 5px);
+  background-color: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  padding: 8px 12px;
+  width: 250px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 100;
+  font-size: 14px;
+  color: #4B5563;
+  display: none;
 }
 
 .help-tooltip.visible {
-    display: block;
+  display: block;
 }
 
 .help-tooltip:after {
-    content: '';
-    position: absolute;
-    top: -5px;
-    right: 10px;
-    width: 8px;
-    height: 8px;
-    background-color: #F3F4F6;
-    border-left: 1px solid #E5E7EB;
-    border-top: 1px solid #E5E7EB;
-    transform: rotate(45deg);
+  content: '';
+  position: absolute;
+  top: -5px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  background-color: #F3F4F6;
+  border-left: 1px solid #E5E7EB;
+  border-top: 1px solid #E5E7EB;
+  transform: rotate(45deg);
 }
 
 .rule-container.struggling {
-    animation: pulse 2s infinite;
+  animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
-}
-
-.completion-message {
-    background-color: #ecfdf5;
-    border: 1px solid #a7f3d0;
-    border-radius: 8px;
-    padding: 16px;
-    margin-top: 20px;
-    text-align: center;
-    display: none;
-}
-
-.completion-message.visible {
-    display: block;
-}
-
-.button {
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.button:hover {
-    background-color: #1d4ed8;
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
 }
