@@ -1,20 +1,45 @@
-<!-- thanks.html -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Thanks!</title>
-  <style>body{font-family:system-ui,sans-serif;text-align:center;padding:4rem}a{color:#2563eb}</style>
+  <title>Thanks for your scenario!</title>
+  <style>
+    body{font-family:system-ui,sans-serif;max-width:60rem;margin:0 auto;padding:2rem;}
+    textarea{width:100%;min-height:12rem;margin:1rem 0;}
+    a.btn{display:inline-block;padding:.6rem 1.2rem;background:#2563eb;color:#fff;border-radius:.4rem;text-decoration:none;}
+  </style>
 </head>
 <body>
-  <h1>🎉 Thanks for your story!</h1>
-  <p>We’ve stored it safely.</p>
+  <h1>🎉 Thanks for contributing!</h1>
+
+  <p>Here’s the story you just submitted (feel free to copy‑paste it somewhere safe):</p>
+  <textarea id="storyReview" readonly>Loading story…</textarea>
+
   <p>
-    Want to help a bit more?
-    <a href="https://yourExternalSurvey.com" target="_blank" rel="noopener">
+    <a class="btn" href="https://tally.so/r/wA0zBk" target="_blank" rel="noopener">
       Take the short follow‑up survey
-    </a>.
+    </a>
   </p>
+
   <p><a href="/">← Write another scenario</a></p>
+
+  <script>
+    // Fill the textarea with the story saved in step 1
+    const story = localStorage.getItem('latestStory');
+    if (story) {
+      document.getElementById('storyReview').value = story;
+    } else {
+      document.getElementById('storyReview').value =
+        '⚠️ Sorry, we could not retrieve your text. If you did not download it, please go back and copy it manually.';
+    }
+    // Optionally clear it so a shared computer doesn’t leak stories:
+    // localStorage.removeItem('latestStory');
+    const params = new URLSearchParams(location.search);
+const sid = params.get('sid');
+if (sid) {
+  document.querySelector('.btn').href =
+    `https://tally.so/r/yourTallyID?submissionId=${encodeURIComponent(sid)}`;
+}
+  </script>
 </body>
 </html>
