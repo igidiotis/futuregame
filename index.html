@@ -1,72 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Future of Education – Interactive Writing Game</title>
-    <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Future of Education – Interactive Writing Game</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- ONE and only ONE form; all inputs live inside it -->
-    <form name="future-story"
-          method="POST"
-          data-netlify="true"
-          netlify-honeypot="bot-field"
-          id="storyForm">
 
-        <!-- Netlify spam‑trap -->
-        <div hidden aria-hidden="true">
-            <label>Don’t fill this out if you’re human:
-                <input name="bot-field" />
-            </label>
-        </div>
+  <!-- ONE form tag, everything lives inside -->
+  <form name="future-story"
+        action="/thanks"           <!-- folder-style path -->
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        id="storyForm">
 
-        <!-- Netlify identifies the form via this hidden field (it will add one anyway) -->
-        <input type="hidden" name="form-name" value="future-story" />
+    <!-- honeypot -->
+    <div hidden aria-hidden="true">
+      <label>Don’t fill this out: <input name="bot-field"></label>
+    </div>
 
-        <!-- Redirect to your custom page after Netlify stores the submission -->
-        <input type="hidden" name="redirect" value="/thanks.html?sid={{submissionId}}" />
+    <!-- story text -->
+    <textarea id="story-input" name="story"
+              placeholder="Start writing your scenario here…" required></textarea>
 
-        <!-- ──────────────────────────────────────────────────────────── -->
-        <div class="game-container">
-            <div class="game-header">
-                <h1>Future of Education</h1>
-                <p>Write a speculative scenario about the future of education. New rules will appear as you write!</p>
-            </div>
+    <!-- optional e‑mail -->
+    <input type="email" id="email-input" name="email"
+           placeholder="me@example.com">
 
-            <div class="textarea-container">
-                <textarea id="story-input" name="story" placeholder="Start writing your future education scenario here…" required></textarea>
-                <div class="word-count" id="word-count">0 words</div>
-            </div>
+    <!-- submit -->
+    <button type="submit">📨 Submit story</button>
+  </form>
 
-            <div class="rules-container" id="rules-list"><!-- rules injected by script.js --></div>
-
-            <!-- OPTIONAL E‑MAIL – hidden until the story is validated -->
-            <div class="email-container" id="email-container" style="display:none;">
-                <label>
-                    Want to stay in touch? Drop your e‑mail (optional):
-                    <input type="email" id="email-input" name="email" placeholder="me@example.com" />
-                </label>
-            </div>
-
-            <div class="completion-message" id="completion-message" style="display:none;">
-                <h2>Congratulations!</h2>
-                <p>You've completed your future education scenario. Well done!</p>
-
-                <!-- SUBMIT posts the form to Netlify -->
-                <button class="button primary" id="submit-button" type="submit">📨 Submit Story</button>
-
-                <!-- CLIENT‑SIDE DOWNLOAD (handled by script.js) -->
-                <button class="button" id="download-button" type="button">⬇️ Download Story</button>
-
-                <!-- RESET UI FOR A NEW ROUND (script.js) -->
-                <button class="button" id="restart-button" type="button">🔄 Write Another Story</button>
-            </div>
-        </div>
-        <!-- ──────────────────────────────────────────────────────────── -->
-
-    </form> <!-- one closing tag for the single form -->
-
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
