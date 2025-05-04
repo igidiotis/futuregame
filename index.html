@@ -8,61 +8,60 @@
 </head>
 <body>
 
-  <!-- 📄 SINGLE Netlify‑processed form -->
+  <!-- SINGLE, VALID FORM (Netlify will POST then redirect to /thanks/) -->
   <form name="future-story"
-        action="/thanks"               <!-- matches thanks/index.html -->
+        action="/thanks"                 <!-- folder thanks/index.html -->
         method="POST"
         data-netlify="true"
         netlify-honeypot="bot-field"
         id="storyForm">
 
-    <!-- honeypot spam‑trap -->
+    <!-- honeypot -->
     <div hidden aria-hidden="true">
       <label>Don’t fill this out: <input name="bot-field"></label>
     </div>
 
-    <!-- Netlify usually injects this, but explicitly adding doesn’t hurt -->
-    <input type="hidden" name="form-name" value="future-story" />
+    <input type="hidden" name="form-name" value="future-story">
 
-    <!-- ╭──────────────────────────────────────────────────────────────╮ -->
+    <!--───────── UI ─────────-->
     <div class="game-container">
-      <div class="game-header">
-        <h1>Future of Education</h1>
-        <p>Write a speculative scenario about the future of education. New rules will appear as you write!</p>
-      </div>
+
+      <h1>Future of Education</h1>
+      <p>Write a speculative scenario about the future of education. New rules will appear as you write!</p>
 
       <div class="textarea-container">
-        <textarea id="story-input" name="story" placeholder="Start writing your scenario here…" required></textarea>
-        <div class="word-count" id="word-count">0 words</div>
+        <textarea id="story-input" name="story"
+                  placeholder="Start writing your scenario here…" required></textarea>
+        <div id="word-count">0 words</div>
       </div>
 
-      <!-- rules injected by script.js -->
-      <div class="rules-container" id="rules-list"></div>
+      <div id="rules-list" class="rules-container"></div>
 
-      <!-- optional e‑mail (shows after validation) -->
-      <div class="email-container" id="email-container" style="display:none;">
+      <div id="email-container" style="display:none;">
         <label>Stay in touch (optional):
-          <input type="email" id="email-input" name="email" placeholder="me@example.com" />
+          <input type="email" id="email-input" name="email" placeholder="me@example.com">
         </label>
       </div>
 
-      <!-- completion UI – revealed by script.js -->
-      <div class="completion-message" id="completion-message" style="display:none;">
+      <div id="completion-message" style="display:none;">
         <h2>Congratulations!</h2>
-        <p>You've completed your scenario. Ready to submit?</p>
+        <p>You've completed your scenario.</p>
 
-        <!-- primary submit posts the form -->
-        <button class="button primary" id="submit-button" type="submit">📨 Submit Story</button>
-
-        <!-- client‑side extras handled by script.js -->
-        <button class="button" id="download-button" type="button">⬇️ Download Story</button>
-        <button class="button" id="restart-button" type="button">🔄 Write Another Story</button>
+        <button id="submit-button"  class="button primary" type="submit">📨 Submit story</button>
+        <button id="download-button" class="button" type="button">⬇️ Download Story</button>
+        <button id="restart-button"  class="button" type="button">🔄 Write Another Story</button>
       </div>
-    </div>
-    <!-- ╰──────────────────────────────────────────────────────────────╯ -->
 
+    </div><!-- /.game-container -->
   </form><!-- END single form -->
 
+  <script>
+    /* store the story in localStorage just before leaving the page */
+    document.getElementById('storyForm').addEventListener('submit', () => {
+      localStorage.setItem('latestStory',
+        document.getElementById('story-input').value);
+    });
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
