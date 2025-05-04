@@ -56,23 +56,26 @@
   </form><!-- END single form -->
 
   <style>
-/* 1 ▸ make the container a positioning context  */
+/* 1 ▸ the wrapper stays the positioning context */
 .textarea-container{
   position:relative;
 }
 
-/* 2 ▸ position the counter in the bottom‑right corner */
+/* 2 ▸ word counter: slightly bigger offset */
 #word-count{
   position:absolute;
-  bottom:.5rem;            /* distance from textarea border */
-  right:.75rem;
-  font-size:.875rem;       /* 14 px-ish */
-  color:#2563eb;           /* same blue you use for buttons; or var(--accent) */
+  bottom:.65rem;      /* was .5rem  */
+  right:1rem;         /* was .75rem */
+  font-size:.875rem;
+  color:#2563eb;
+  pointer-events:none;/* text isn’t clickable */
 }
 
-/* 3 ▸ give the textarea right‑padding so text never overlaps the counter */
+/* 3 ▸ give the textarea bottom‑ and right‑padding so
+      its content never collides with the counter      */
 .textarea-container textarea{
-  padding-right:4.5rem;    /* adjust if you choose a larger font */
+  padding-right:5.5rem;  /* bump from 4.5rem */
+  padding-bottom:1.6rem; /* add explicit bottom space */
 }
 </style>
   
