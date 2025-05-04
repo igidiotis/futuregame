@@ -1,3 +1,8 @@
+// ------------------------------
+//  FUTURE‑GAME MAIN SCRIPT
+//  (updated for Netlify‑Forms flow, e‑mail block, download, restart)
+// ------------------------------
+
 // Helper function to count words
 function getWordCount(text) {
     return text.split(/\s+/).filter(word => word.length > 0).length;
@@ -6,11 +11,11 @@ function getWordCount(text) {
 // Helper function to check if words from two different sets appear close to each other
 const areConceptsNear = (text, conceptSet1, conceptSet2, maxDistance = 50) => {
     text = text.toLowerCase();
-    
+
     // Find all matches for both concept sets
     const matches1 = [];
     const matches2 = [];
-    
+
     conceptSet1.forEach(word => {
         let index = text.indexOf(word);
         while (index !== -1) {
@@ -18,7 +23,7 @@ const areConceptsNear = (text, conceptSet1, conceptSet2, maxDistance = 50) => {
             index = text.indexOf(word, index + 1);
         }
     });
-    
+
     conceptSet2.forEach(word => {
         let index = text.indexOf(word);
         while (index !== -1) {
@@ -26,7 +31,7 @@ const areConceptsNear = (text, conceptSet1, conceptSet2, maxDistance = 50) => {
             index = text.indexOf(word, index + 1);
         }
     });
-    
+
     // Check if any pair of matches is within maxDistance
     for (const match1 of matches1) {
         for (const match2 of matches2) {
@@ -35,18 +40,22 @@ const areConceptsNear = (text, conceptSet1, conceptSet2, maxDistance = 50) => {
             }
         }
     }
-    
+
     return false;
 };
 
-// Game state
+// ------------------------------
+//  GAME STATE
+// ------------------------------
 let gameState = {
     currentText: '',
     rulesCompleted: 0,
     gameComplete: false
 };
 
-// Game rules with simplified validators
+// ------------------------------
+//  GAME RULES
+// ------------------------------
 const rules = [
     {
         id: 1,
@@ -85,7 +94,6 @@ const rules = [
                 'teaching ai', 'teaching robot', 'teaching algorithm',
                 'educational ai', 'learning ai', 'neural teach'
             ];
-            
             const text_lower = text.toLowerCase();
             return commonCombinations.some(combo => text_lower.includes(combo));
         },
@@ -97,14 +105,12 @@ const rules = [
         description: 'Learning Technology: Describe any futuristic technology that helps students learn.',
         helpText: 'Mention technologies like: VR/AR headsets, neural interfaces, brain implants, holographic displays, AI systems, or any digital learning tools.',
         validator: (text) => {
-            // Look for specific learning technologies
             const learningTech = [
                 'vr', 'virtual reality', 'ar', 'augmented reality', 'neural interface', 'brain implant',
                 'holographic display', 'mind link', 'ai system', 'digital learning', 'simulation',
                 'neural network', 'quantum computer', 'nano', 'brain-computer', 'immersive', 
                 'smart classroom', 'educational robot', 'learning algorithm', 'educational software'
             ];
-            
             const text_lower = text.toLowerCase();
             return learningTech.some(tech => text_lower.includes(tech));
         },
@@ -131,7 +137,6 @@ const rules = [
                 'bore', 'tired', 'exhaust', 'satisf', 'proud', 'accomplish',
                 'student feel', 'learner feel', 'feel about', 'emotional', 'experience'
             ];
-            
             const text_lower = text.toLowerCase();
             return emotionTerms.some(term => text_lower.includes(term));
         },
@@ -150,7 +155,6 @@ const rules = [
                 'learning pod', 'education dome', 'smart building', 'interactive environment',
                 'learning space', 'education zone', 'study area', 'immersive'
             ];
-            
             const text_lower = text.toLowerCase();
             return environmentTerms.some(term => text_lower.includes(term));
         },
@@ -177,7 +181,6 @@ const rules = [
                 'addiction', 'dependence', 'isolation', 'disconnect', 'burnout', 'stress',
                 'cost', 'access', 'failure', 'malfunction', 'glitch', 'barrier'
             ];
-            
             const text_lower = text.toLowerCase();
             return challengeTerms.some(term => text_lower.includes(term));
         },
@@ -187,7 +190,7 @@ const rules = [
     {
         id: 10,
         description: 'Sensory Detail: Include what students see, hear, smell, taste, or feel in this environment.',
-        helpText: 'Describe sensations like: glowing screens, humming machines, the smell of clean air, the taste of focus-enhancing drinks, or the feeling of neural connections.',
+        helpText: 'Describe sensations like: glowing screens, humming machines, the smell of clean air, the taste of focus‑enhancing drinks, or the feeling of neural connections.',
         validator: (text) => {
             const sensoryTerms = [
                 'see', 'saw', 'view', 'watch', 'look', 'appear', 'visual', 'display', 'screen', 'image',
@@ -197,7 +200,6 @@ const rules = [
                 'feel', 'touch', 'texture', 'smooth', 'rough', 'soft', 'hard', 'warm', 'cool', 'vibration',
                 'glow', 'shine', 'bright', 'dark', 'light', 'color', 'flash', 'pulse'
             ];
-            
             const text_lower = text.toLowerCase();
             return sensoryTerms.some(term => text_lower.includes(term));
         },
@@ -217,191 +219,156 @@ const rules = [
                 'old system', 'old method', 'old way', 'traditional education',
                 'before this', 'past approach'
             ];
-            
             const text_lower = text.toLowerCase();
             return changeTerms.some(term => text_lower.includes(term));
         },
         satisfied: false,
         active: false
     },
-    // Rule 12 (Narrative Structure) removed as requested
     {
         id: 13,
         description: 'Story Length: Your story must be at least 100 words long to be complete.',
         helpText: 'Your story currently has less than 100 words. Add more details about the learning experience, technologies, or emotions of the students to reach 100 words.',
-        validator: (text) => {
-            const count = getWordCount(text);
-            return count >= 100;
-        },
+        validator: (text) => getWordCount(text) >= 100,
         satisfied: false,
         active: false
     }
 ];
 
-// Function to render a rule with expandable help
+// ------------------------------
+//  UI RENDERING HELPERS
+// ------------------------------
 function renderRule(rule) {
     const ruleElement = document.createElement('div');
     ruleElement.className = `rule-container ${rule.satisfied ? 'satisfied' : ''} ${!rule.active ? 'inactive' : ''} ${rule.struggling ? 'struggling' : ''}`;
     ruleElement.id = `rule-${rule.id}`;
-    
+
     // Create rule header (contains the rule text and help icon)
     const ruleHeader = document.createElement('div');
     ruleHeader.className = 'rule-header';
-    
+
     // Rule text
     const ruleText = document.createElement('div');
     ruleText.className = 'rule-text';
     ruleText.innerText = rule.description;
-    
+
     // Add elements to header
     ruleHeader.appendChild(ruleText);
-    
+
     // Only add help icon for active, unsatisfied rules
     if (rule.active && !rule.satisfied) {
         const helpIcon = document.createElement('div');
         helpIcon.className = 'help-icon';
         helpIcon.innerText = '?';
-        
-        // Add help icon to header
         ruleHeader.appendChild(helpIcon);
-        
-        // Make the whole header clickable to toggle help
-        ruleHeader.addEventListener('click', () => {
-            toggleHelp(rule.id);
-        });
+        ruleHeader.addEventListener('click', () => toggleHelp(rule.id));
     }
-    
-    // Create expandable help content section
+
+    // Expandable help content
     const helpContent = document.createElement('div');
     helpContent.className = 'help-content';
     helpContent.id = `help-${rule.id}`;
     helpContent.innerText = rule.helpText || 'Try to fulfill this rule to continue your story.';
-    
-    // Add all elements to the rule container
+
     ruleElement.appendChild(ruleHeader);
     ruleElement.appendChild(helpContent);
-    
+
     return ruleElement;
 }
 
-// Toggle help expansion for a specific rule
 function toggleHelp(ruleId) {
     const ruleElement = document.getElementById(`rule-${ruleId}`);
     if (ruleElement) {
-        // Toggle expanded class
         ruleElement.classList.toggle('help-expanded');
-        
-        // Mark that we've shown help for this rule
         const rule = rules.find(r => r.id === ruleId);
-        if (rule && ruleElement.classList.contains('help-expanded')) {
-            rule.helpShown = true;
-        }
+        if (rule && ruleElement.classList.contains('help-expanded')) rule.helpShown = true;
     }
 }
 
-// Show help for a specific rule
 function showHelp(ruleId) {
     const ruleElement = document.getElementById(`rule-${ruleId}`);
     if (ruleElement && !ruleElement.classList.contains('help-expanded')) {
         ruleElement.classList.add('help-expanded');
-        
-        // Mark that we've shown help for this rule
         const rule = rules.find(r => r.id === ruleId);
-        if (rule) {
-            rule.helpShown = true;
-        }
-        
-        // Auto-hide after 8 seconds
-        setTimeout(() => {
-            ruleElement.classList.remove('help-expanded');
-        }, 8000);
+        if (rule) rule.helpShown = true;
+        setTimeout(() => ruleElement.classList.remove('help-expanded'), 8000);
     }
 }
 
-// Auto-show help for rules that the user is struggling with
 function monitorUserStruggle() {
     const STRUGGLE_TIME = 20000; // 20 seconds
-    
     rules.forEach(rule => {
         if (rule.active && !rule.satisfied && !rule.helpShown) {
             const timeActive = Date.now() - rule.activeSince;
-            
             if (timeActive > STRUGGLE_TIME) {
                 rule.struggling = true;
                 showHelp(rule.id);
-                
-                // Update the rule display
                 updateRulesList();
             }
         }
     });
 }
 
-// Update the rules list in the UI - Modified to show unsatisfied rules first
 function updateRulesList() {
     const rulesList = document.getElementById('rules-list');
+    if (!rulesList) return;
     rulesList.innerHTML = '';
-    
-    // First, add active but not satisfied rules
-    const unsatisfiedRules = rules.filter(rule => rule.active && !rule.satisfied);
-    unsatisfiedRules.forEach(rule => {
-        rulesList.appendChild(renderRule(rule));
-    });
-    
-    // Then, add satisfied rules
-    const satisfiedRules = rules.filter(rule => rule.satisfied);
-    satisfiedRules.forEach(rule => {
-        rulesList.appendChild(renderRule(rule));
-    });
+
+    // Unsatisfied active rules first
+    rules.filter(r => r.active && !r.satisfied).forEach(rule => rulesList.appendChild(renderRule(rule)));
+    // Then satisfied ones
+    rules.filter(r => r.satisfied).forEach(rule => rulesList.appendChild(renderRule(rule)));
 }
 
-// Check which rules are satisfied with the current text
+// ------------------------------
+//  RULE VALIDATION & PROGRESSION
+// ------------------------------
 function validateRules(text) {
     let activeRulesCount = 0;
     let satisfiedActiveRulesCount = 0;
-    
+
     rules.forEach(rule => {
         if (rule.active) {
             activeRulesCount++;
             const isSatisfied = rule.validator(text);
-            
+
             if (isSatisfied && !rule.satisfied) {
                 rule.satisfied = true;
                 activateNextRules(rule.id);
             } else if (!isSatisfied && rule.satisfied) {
                 rule.satisfied = false;
             }
-            
-            if (rule.satisfied) {
-                satisfiedActiveRulesCount++;
-            }
+            if (rule.satisfied) satisfiedActiveRulesCount++;
         }
     });
-    
-    // Check if all rules are satisfied
-    if (activeRulesCount > 0 && activeRulesCount === satisfiedActiveRulesCount && rules[rules.length - 1].satisfied) {
+
+    const allSatisfied = activeRulesCount > 0 && activeRulesCount === satisfiedActiveRulesCount && rules[rules.length - 1].satisfied;
+
+    if (allSatisfied) {
         gameState.gameComplete = true;
-        document.getElementById('completion-message').classList.add('visible');
+        const completionMessageEl = document.getElementById('completion-message');
+        if (completionMessageEl) {
+            completionMessageEl.classList.add('visible');
+            completionMessageEl.style.display = 'block';
+        }
+        const emailContainerEl = document.getElementById('email-container');
+        if (emailContainerEl) emailContainerEl.style.display = 'block';
     }
-    
+
     updateRulesList();
 }
 
-// Activate the next set of rules based on the current progress
 function activateNextRules(currentRuleId) {
-    // Define rule progression
     const ruleProgression = {
-        1: [2], // After Getting Started -> Educational Focus
-        2: [3], // After Educational Focus -> Future Educator
-        3: [4], // After Future Educator -> Learning Technology
-        4: [5], // After Learning Technology -> Growing Story (50 words)
-        5: [6, 7], // After Growing Story -> Student Experience & Learning Environment
-        7: [8, 9], // After Learning Environment -> Future Timeline & Education Challenge
-        9: [10, 11], // After Education Challenge -> Sensory Detail & Educational Shift
-        11: [13], // After Educational Shift -> Story Length (skipping Narrative Structure)
+        1: [2],
+        2: [3],
+        3: [4],
+        4: [5],
+        5: [6, 7],
+        7: [8, 9],
+        9: [10, 11],
+        11: [13]
     };
-    
-    // Activate next rules if defined in the progression
     if (ruleProgression[currentRuleId]) {
         ruleProgression[currentRuleId].forEach(nextRuleId => {
             const nextRule = rules.find(r => r.id === nextRuleId);
@@ -415,120 +382,90 @@ function activateNextRules(currentRuleId) {
     }
 }
 
-// Function to download story as .txt file
+// ------------------------------
+//  DOWNLOAD, RESTART, INPUT HANDLING
+// ------------------------------
 function downloadStory() {
     const text = gameState.currentText;
-    const filename = "future_education_story.txt";
-    
-    // Create a Blob with the story text
-    const blob = new Blob([text], { type: "text/plain" });
-    
-    // Create a link element
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    
-    // Trigger download
-    document.body.appendChild(link);
-    link.click();
-    
-    // Clean up
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'my_future_story.txt';
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
-// Handle text input
 function handleTextInput(event) {
     const text = event.target.value;
     gameState.currentText = text;
-    
-    // Update word count
     const wordCount = getWordCount(text);
-    document.getElementById('word-count').innerText = `${wordCount} words`;
-    
-    // Validate rules
+    const wordCountEl = document.getElementById('word-count');
+    if (wordCountEl) wordCountEl.innerText = `${wordCount} word${wordCount === 1 ? '' : 's'}`;
     validateRules(text);
 }
 
-// Restart the game
 function restartGame() {
-    // Reset game state
-    gameState = {
-        currentText: '',
-        rulesCompleted: 0,
-        gameComplete: false
-    };
-    
-    // Reset rules
+    gameState = { currentText: '', rulesCompleted: 0, gameComplete: false };
     rules.forEach(rule => {
         rule.satisfied = false;
-        rule.active = rule.id === 1; // Only the first rule starts active
+        rule.active = rule.id === 1;
         rule.helpShown = false;
         rule.struggling = false;
-        if (rule.active) {
-            rule.activeSince = Date.now();
-        }
+        if (rule.active) rule.activeSince = Date.now();
     });
-    
-    // Clear textarea
+
     const storyInput = document.getElementById('story-input');
-    storyInput.value = '';
-    document.getElementById('word-count').innerText = '0 words';
-    
-    // Hide completion message
-    document.getElementById('completion-message').classList.remove('visible');
-    
-    // Update rules list
+    if (storyInput) storyInput.value = '';
+    const wordCountEl = document.getElementById('word-count');
+    if (wordCountEl) wordCountEl.innerText = '0 words';
+
+    const completionMessageEl = document.getElementById('completion-message');
+    if (completionMessageEl) {
+        completionMessageEl.classList.remove('visible');
+        completionMessageEl.style.display = 'none';
+    }
+    const emailContainerEl = document.getElementById('email-container');
+    if (emailContainerEl) emailContainerEl.style.display = 'none';
+
     updateRulesList();
 }
 
-// Initialize the game
+// ------------------------------
+//  INITIALISATION
+// ------------------------------
 function initGame() {
-    // Set up event listeners
+    // Input listener
     const storyInput = document.getElementById('story-input');
-    storyInput.addEventListener('input', handleTextInput);
-    
+    if (storyInput) storyInput.addEventListener('input', handleTextInput);
+
+    // Restart button listener
     const restartButton = document.getElementById('restart-button');
-    if (restartButton) {
-        restartButton.addEventListener('click', restartGame);
-    }
-    
-    // Add download button to completion message if it doesn't exist
-    const completionMessage = document.getElementById('completion-message');
-    if (completionMessage) {
-        let downloadButton = document.getElementById('download-button');
-        
-        if (!downloadButton) {
-            downloadButton = document.createElement('button');
-            downloadButton.className = 'button';
-            downloadButton.id = 'download-button';
-            downloadButton.innerText = 'Download Story';
-            downloadButton.addEventListener('click', downloadStory);
-            
-            // Add some space between buttons
-            const spacer = document.createElement('span');
-            spacer.style.margin = '0 10px';
-            
-            // Find the restart button and insert the download button before it
-            const existingRestartButton = document.getElementById('restart-button');
-            if (existingRestartButton && existingRestartButton.parentNode) {
-                existingRestartButton.parentNode.insertBefore(downloadButton, existingRestartButton);
-                existingRestartButton.parentNode.insertBefore(spacer, existingRestartButton);
-            } else {
-                completionMessage.appendChild(downloadButton);
+    if (restartButton) restartButton.addEventListener('click', restartGame);
+
+    // Download button listener
+    const downloadButton = document.getElementById('download-button');
+    if (downloadButton) downloadButton.addEventListener('click', downloadStory);
+
+    // FORM submit → optional survey tab
+    const formElement = document.getElementById('storyForm');
+    if (formElement) {
+        formElement.addEventListener('submit', () => {
+            const emailInput = document.getElementById('email-input');
+            if (emailInput && emailInput.value.trim()) {
+                setTimeout(() => {
+                    // TODO: replace with actual survey URL when you have it
+                    window.open('https://yoursurveyprovider.com/followup', '_blank', 'noopener');
+                }, 400);
             }
-        } else {
-            // Make sure the event listener is attached
-            downloadButton.addEventListener('click', downloadStory);
-        }
+        });
     }
-    
-    // Set up initial rules
+
+    // Initial rules render
     updateRulesList();
-    
-    // Set up the monitor to check periodically for user struggle
-    setInterval(monitorUserStruggle, 5000); // Check every 5 seconds
+
+    // Periodic struggle monitor
+    setInterval(monitorUserStruggle, 5000);
 }
 
-// Initialize the game when the DOM is loaded
 document.addEventListener('DOMContentLoaded', initGame);
