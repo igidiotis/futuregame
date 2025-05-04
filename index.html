@@ -1,37 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Future of Education – Interactive Writing Game</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Future of Education – Interactive Writing Game</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <!-- ONE form tag, everything lives inside -->
+  <!-- 📄 SINGLE Netlify‑processed form -->
   <form name="future-story"
-        action="/thanks"           <!-- folder-style path -->
+        action="/thanks"               <!-- matches thanks/index.html -->
         method="POST"
         data-netlify="true"
         netlify-honeypot="bot-field"
         id="storyForm">
 
-    <!-- honeypot -->
+    <!-- honeypot spam‑trap -->
     <div hidden aria-hidden="true">
       <label>Don’t fill this out: <input name="bot-field"></label>
     </div>
 
-    <!-- story text -->
-    <textarea id="story-input" name="story"
-              placeholder="Start writing your scenario here…" required></textarea>
+    <!-- Netlify usually injects this, but explicitly adding doesn’t hurt -->
+    <input type="hidden" name="form-name" value="future-story" />
 
-    <!-- optional e‑mail -->
-    <input type="email" id="email-input" name="email"
-           placeholder="me@example.com">
+    <!-- ╭──────────────────────────────────────────────────────────────╮ -->
+    <div class="game-container">
+      <div class="game-header">
+        <h1>Future of Education</h1>
+        <p>Write a speculative scenario about the future of education. New rules will appear as you write!</p>
+      </div>
 
-    <!-- submit -->
-    <button type="submit">📨 Submit story</button>
-  </form>
+      <div class="textarea-container">
+        <textarea id="story-input" name="story" placeholder="Start writing your scenario here…" required></textarea>
+        <div class="word-count" id="word-count">0 words</div>
+      </div>
+
+      <!-- rules injected by script.js -->
+      <div class="rules-container" id="rules-list"></div>
+
+      <!-- optional e‑mail (shows after validation) -->
+      <div class="email-container" id="email-container" style="display:none;">
+        <label>Stay in touch (optional):
+          <input type="email" id="email-input" name="email" placeholder="me@example.com" />
+        </label>
+      </div>
+
+      <!-- completion UI – revealed by script.js -->
+      <div class="completion-message" id="completion-message" style="display:none;">
+        <h2>Congratulations!</h2>
+        <p>You've completed your scenario. Ready to submit?</p>
+
+        <!-- primary submit posts the form -->
+        <button class="button primary" id="submit-button" type="submit">📨 Submit Story</button>
+
+        <!-- client‑side extras handled by script.js -->
+        <button class="button" id="download-button" type="button">⬇️ Download Story</button>
+        <button class="button" id="restart-button" type="button">🔄 Write Another Story</button>
+      </div>
+    </div>
+    <!-- ╰──────────────────────────────────────────────────────────────╯ -->
+
+  </form><!-- END single form -->
 
   <script src="script.js"></script>
 </body>
