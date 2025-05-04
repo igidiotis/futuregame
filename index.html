@@ -1,104 +1,97 @@
-<p>&nbsp;</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Future of Education – Interactive Writing Game</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
 
-<p>Future of Education&nbsp;&ndash;&nbsp;Interactive Writing Game</p>
+  <!-- SINGLE, VALID FORM (Netlify will POST then redirect to /thanks/) -->
+  <form name="future-story"
+        action="/thanks"                 
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        id="storyForm">
 
-<!-- SINGLE, VALID FORM (Netlify will POST then redirect to /thanks/) -->
-<form
-  id="storyForm"
-  action="/thanks"
-  method="POST"
-  name="future-story"
-  data-netlify="true"
->
-  <!-- honeypot -->
-  <div hidden>
-    <label>
-      Don’t fill this out:
-      <input name="bot-field" type="text" />
-    </label>
-  </div>
-
-  <input name="form-name" type="hidden" value="future-story" />
-
-  <!-- ───────── UI ───────── -->
-  <div class="game-container">
-    <h1 style="text-align:center;">Education Futures</h1>
-
-    <p style="text-align:center;">
-      Write a speculative scenario about the future of education.
-      New rules will appear as you shape your story!
-    </p>
-
-    <p style="font-size:0.875rem;opacity:0.8;text-align:center;">
-      Created by
-      <a
-        href="https://www.kth.se/profile/gidiotis"
-        target="_blank"
-        rel="noopener"
-        >Iosif Gidiotis</a
-      >
-      &middot; Inspired by
-      <a
-        href="https://neal.fun/password-game/"
-        target="_blank"
-        rel="noopener"
-        >The Password Game</a
-      >
-    </p>
-
-    <div class="textarea-container">
-      <textarea
-        id="story-input"
-        name="story"
-        required
-        placeholder="Start writing your scenario here…"
-      ></textarea>
-
-      <div id="word-count" class="word-count">0 words</div>
-
-      <p style="font-size:0.875rem;opacity:0.8;text-align:center;">
-        Need inspiration?
-        <a
-          href="https://www.kth.se/profile/gidiotis"
-          target="_blank"
-          rel="noopener"
-          >click here</a
-        >
-      </p>
+    <!-- honeypot -->
+    <div hidden aria-hidden="true">
+      <label>Don’t fill this out: <input name="bot-field"></label>
     </div>
 
-    <!-- rules injected by script.js -->
-    <div id="rules-list" class="rules-container"></div>
+    <input type="hidden" name="form-name" value="future-story">
 
-    <!-- optional email (shown after validation) -->
-    <div id="email-container" style="display:none;">
-      <label>
-        Stay in touch (optional):
-        <input
-          id="email-input"
-          name="email"
-          type="email"
-          placeholder="me@example.com"
-        />
-      </label>
-    </div>
+    <!--───────── UI ─────────-->
+    <div class="game-container">
 
-    <!-- completion UI -->
-    <div id="completion-message" style="display:none;">
-      <h2>Congratulations!</h2>
-      <p>You've completed your scenario.</p>
+      <h1>Education Futures</h1>
+      <p>Write a speculative scenario about the future of education. New rules will appear as you shape your story!</p>
+      <p style="font-size:.875rem;opacity:.8;">
+          Created by <a href="https://www.kth.se/profile/gidiotis" target="_blank" rel="noopener">Iosif Gidiotis</a> · Inspired by <a href="https://neal.fun/password-game/" target="_blank" rel="noopener">The Password Game</a>
+        </p>
 
-      <button id="submit-button" class="button primary" type="submit">
-        📨 Submit story
-      </button>
-      <button id="download-button" class="button" type="button">
-        ⬇️ Download story
-      </button>
-      <button id="restart-button" class="button" type="button">
-        🔄 Write another story
-      </button>
-    </div>
-  </div>
-  <!-- /.game-container -->
-</form>
-<!-- END single form -->
+      <div class="textarea-container">
+        <textarea id="story-input" name="story"
+                  placeholder="Start writing your scenario here…" required></textarea>
+        <div class="word-count" id="word-count">0 words</div>
+        <p style="font-size:.875rem;opacity:.8;">
+          Need inspiration? Click <a href="https://www.kth.se/profile/gidiotis" target="_blank" rel="noopener">here</a>
+        </p>
+      </div>
+
+      <div id="rules-list" class="rules-container"></div>
+
+      <div id="email-container" style="display:none;">
+        <label>Stay in touch (optional):
+          <input type="email" id="email-input" name="email" placeholder="me@example.com">
+        </label>
+      </div>
+
+      <div id="completion-message" style="display:none;">
+        <h2>Congratulations!</h2>
+        <p>You've completed your scenario.</p>
+
+        <button id="submit-button"  class="button primary" type="submit">📨 Submit story</button>
+        <button id="download-button" class="button" type="button">⬇️ Download Story</button>
+        <button id="restart-button"  class="button" type="button">🔄 Write Another Story</button>
+      </div>
+
+    </div><!-- /.game-container -->
+  </form><!-- END single form -->
+
+  <style>
+/* 1 ▸ the wrapper stays the positioning context */
+.textarea-container{
+  position:relative;
+}
+
+/* 2 ▸ word counter: slightly bigger offset */
+#word-count{
+  position:absolute;
+  bottom:.65rem;      /* was .5rem  */
+  right:1rem;         /* was .75rem */
+  font-size:.875rem;
+  color:#2563eb;
+  pointer-events:none;/* text isn’t clickable */
+}
+
+/* 3 ▸ give the textarea bottom‑ and right‑padding so
+      its content never collides with the counter      */
+.textarea-container textarea{
+  padding-right:5.5rem;  /* bump from 4.5rem */
+  padding-bottom:1.6rem; /* add explicit bottom space */
+}
+</style>
+  
+  <script>
+    /* store the story in localStorage just before leaving the page */
+    document.getElementById('storyForm').addEventListener('submit', () => {
+      localStorage.setItem('latestStory',
+        document.getElementById('story-input').value);
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
