@@ -1,35 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Future of Education - Interactive Writing Game</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Future of Education – Interactive Writing Game</title>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <div class="game-container">
-        <div class="game-header">
-            <h1>Future of Education</h1>
-            <p>Write a speculative scenario about the future of education. New rules will appear as you write!</p>
+    <!--
+      Wrapping the whole game in a <form> lets Netlify capture the data without
+      any server‑side code.  The form and every INPUT/TEXTAREA need to be
+      present in the raw HTML for Netlify’s build‑time parser to recognise
+      them – hiding with CSS is fine.
+    -->
+    <form name="future-story" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="storyForm">
+        <!--  Netlify spam‑trap (kept visually hidden)  -->
+        <div hidden aria-hidden="true">
+            <label>Don’t fill this out if you’re human: <input name="bot-field" /></label>
         </div>
-        
-        <div class="textarea-container">
-            <textarea id="story-input" placeholder="Start writing your future education scenario here..."></textarea>
-            <div class="word-count" id="word-count">0 words</div>
-        </div>
-        
-        <div class="rules-container" id="rules-list">
-            <!-- Rules will be dynamically added here -->
-        </div>
-        
-        <div class="completion-message" id="completion-message">
-            <h2>Congratulations!</h2>
-            <p>You've completed your future education scenario. Well done!</p>
-            <button class="button" id="download-button">Download Story</button>
-            <button class="button" id="restart-button">Write Another Story</button>
-        </div>
-    </div>
+        <input type="hidden" name="form-name" value="future-story" />
 
+        <div class="game-container">
+            <div class="game-header">
+                <h1>Future of Education</h1>
+                <p>Write a speculative scenario about the future of education. New rules will appear as you write!</p>
+            </div>
+            
+            <div class="textarea-container">
+                <!--  Added a NAME attribute so Netlify saves the story  -->
+                <textarea id="story-input" name="story" placeholder="Start writing your future education scenario here..." required></textarea>
+                <div class="word-count" id="word-count">0 words</div>
+            </div>
+            
+            <div class="rules-container" id="rules-list"><!-- rules injected by script.js --></div>
+
+            <!--  OPTIONAL E‑MAIL – hidden until the story is validated  -->
+            <div class="email-container" id="email-container" style="display:none;">
+                <label>
+                    Want to stay in touch? Drop your e‑mail (optional):
+                    <input type="email" id="email-input" name="email" placeholder="me@example.com" />
+                </label>
+            </div>
+            
+            <div class="completion-message" id="completion-message" style="display:none;">
+                <h2>Congratulations!</h2>
+                <p>You've completed your future education scenario. Well done!</p>
+
+                <!--  SUBMIT posts the form to Netlify  -->
+                <button class="button primary" id="submit-button" type="submit">📨 Submit Story</button>
+
+                <!--  CLIENT‑SIDE DOWNLOAD (handled by script.js)  -->
+                <button class="button" id="download-button" type="button">⬇️ Download Story</button>
+
+                <!--  RESET UI FOR A NEW ROUND (script.js)  -->
+                <button class="button" id="restart-button" type="button">🔄 Write Another Story</button>
+            </div>
+        </div>
+    </form>
+
+    <!--  Your rule‑engine + UI logic -->
     <script src="script.js"></script>
 </body>
 </html>
