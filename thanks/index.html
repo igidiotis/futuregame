@@ -3,28 +3,102 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Thanks!</title>
+  <title>Thank you!</title>
+
+  <!-- quick, lightweight styling -->
+  <style>
+    :root{
+      --accent:#2563eb;
+      --accent-hover:#1e40af;
+      --bg:#f0f4ff;
+      --text:#111827;
+      --radius:12px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      display:flex;
+      min-height:100vh;
+      align-items:center;
+      justify-content:center;
+    }
+    .card{
+      background:#fff;
+      width:min(90%,720px);
+      padding:2rem 2.5rem;
+      border-radius:var(--radius);
+      box-shadow:0 8px 24px rgba(0,0,0,.07);
+    }
+    h1{
+      margin-top:0;
+      font-size:clamp(1.8rem,3vw,2.2rem);
+      text-align:center;
+    }
+    textarea{
+      width:100%;
+      min-height:160px;
+      padding:1rem;
+      border:1px solid #d1d5db;
+      border-radius:var(--radius);
+      resize:vertical;
+      font-family:inherit;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:.4rem;
+      padding:.65rem 1.3rem;
+      border:none;
+      border-radius:var(--radius);
+      background:var(--accent);
+      color:#fff;
+      text-decoration:none;
+      font-weight:500;
+      cursor:pointer;
+      transition:background .15s ease;
+    }
+    .btn:hover{background:var(--accent-hover)}
+    .actions{
+      display:flex;
+      gap:1rem;
+      flex-wrap:wrap;
+      margin-top:1.5rem;
+      justify-content:center;
+    }
+    @media (prefers-color-scheme: dark){
+      body{background:#111827;color:#f3f4f6}
+      .card{background:#1f2937;border:1px solid #374151}
+      textarea{background:#111827;color:#f3f4f6;border-color:#374151}
+    }
+  </style>
 </head>
 <body>
-  <h1>🎉 Thank you for your story!</h1>
+  <div class="card">
+    <h1>🎉 Thank you for your story!</h1>
+    <p>Here’s what you submitted — feel free to copy it for your records:</p>
+    <textarea id="storyBox" readonly>Loading…</textarea>
 
-  <p>Below is the text we saved; feel free to copy it:</p>
-  <textarea id="storyBox" style="width:100%;min-height:12rem;"></textarea>
-
-  <p><a href="https://tally.so/r/wA0zBk" target="_blank" rel="noopener">Take the 2‑minute survey</a></p>
-  <p><a href="/">← Write another scenario</a></p>
+    <div class="actions">
+      <a id="surveyBtn" class="btn" href="#" target="_blank" rel="noopener" title="Open short follow‑up survey">
+        <span>📝 Take the 2‑minute survey</span>
+      </a>
+      <a class="btn" href="/" title="Write another scenario">↩️ Write another story</a>
+    </div>
+  </div>
 
   <script>
-    // 1) Try localStorage
-    let text = localStorage.getItem('latestStory');
+    // Populate story from localStorage or fallback query param
+    const story = localStorage.getItem('latestStory') || new URLSearchParams(location.search).get('story');
+    document.getElementById('storyBox').value = story || 'Story not found.';
 
-    // 2) Fallback: look for ?story=… in the URL (only happens if someone forces GET)
-    if (!text) {
-      const qs = new URLSearchParams(location.search);
-      text = qs.get('story');
-    }
-
-    document.getElementById('storyBox').value = text || 'Story not found.';
+    // If submissionId (?sid=) present, append to Tally link
+    const params = new URLSearchParams(location.search);
+    const sid = params.get('sid');
+    const baseTally = 'https://tally.so/r/wA0zBk';
+    document.getElementById('surveyBtn').href = sid ? `${baseTally}?submissionId=${encodeURIComponent(sid)}` : baseTally;
   </script>
 </body>
 </html>
