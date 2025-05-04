@@ -55,6 +55,27 @@
     </div><!-- /.game-container -->
   </form><!-- END single form -->
 
+  <style>
+/* 1 ▸ make the container a positioning context  */
+.textarea-container{
+  position:relative;
+}
+
+/* 2 ▸ position the counter in the bottom‑right corner */
+#word-count{
+  position:absolute;
+  bottom:.5rem;            /* distance from textarea border */
+  right:.75rem;
+  font-size:.875rem;       /* 14 px-ish */
+  color:#2563eb;           /* same blue you use for buttons; or var(--accent) */
+}
+
+/* 3 ▸ give the textarea right‑padding so text never overlaps the counter */
+.textarea-container textarea{
+  padding-right:4.5rem;    /* adjust if you choose a larger font */
+}
+</style>
+  
   <script>
     /* store the story in localStorage just before leaving the page */
     document.getElementById('storyForm').addEventListener('submit', () => {
