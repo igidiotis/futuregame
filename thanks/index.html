@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Thanks!</title>
+</head>
+<body>
+  <h1>🎉 Thank you for your story!</h1>
+  <p id="copy">Loading story…</p>
+
+  <a href="https://tally.so/r/wA0zBk" target="_blank" rel="noopener">
+    Take the 2‑minute survey
+  </a>
+  <script>
+    const story = localStorage.getItem('latestStory');
+    document.getElementById('copy').textContent = story || 'Story not found.';
+  </script>
+</body>
+</html>
