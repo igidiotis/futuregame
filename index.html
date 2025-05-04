@@ -58,15 +58,19 @@
         </div>
 
     <form name="future-story"
-      action="/thanks.html"
       method="POST"
       data-netlify="true"
       netlify-honeypot="bot-field"
       id="storyForm">
 
-        <input type="hidden"
-       name="redirect"
-       value="/thanks?sid={{submissionId}}"> 
+  <!-- Netlify‑injected field (optional if you add it yourself) -->
+  <input type="hidden" name="form-name" value="future-story">
+
+  <!-- SINGLE redirect hidden input -->
+  <input type="hidden"
+         name="redirect"
+         value="/thanks.html?sid={{submissionId}}">   <!-- ← one line -->
+
     </form>
 
     <!--  Your rule‑engine + UI logic -->
